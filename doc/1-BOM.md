@@ -1,5 +1,9 @@
-Purchased Parts required for conversion
----------------------------------------
+BOM for Flashforge Creator Pro 2 -> FFCP2+OK Conversion
+-------------------------------------------------------
+Parts-list for converting the Flashforge Creator Pro 2 into the the modernized Klipper-based FFCP2+OK.
+
+Purchased Parts Required
+========================
 
 + Flashforge Creator Pro 2 Mainboard Upgrade
   + BIGTREETECH Octopus Pro v1.1 H723: https://amzn.to/4b8VYAA (qty: 1)
@@ -29,6 +33,6 @@ Purchased Parts required for conversion
   + Pinecil TS-100i-style Soldering Iron: https://amzn.to/492wROA
 
 
-Printed Parts required for conversion
--------------------------------------
+Printed Parts
+=============
 See: ../cad/*.step
