@@ -2,7 +2,7 @@ BOM for Flashforge Creator Pro 2 -> FFCP2+OK Conversion
 -------------------------------------------------------
 Parts-list for converting the Flashforge Creator Pro 2 into the the modernized Klipper-based FFCP2+OK.
 
-Purchased Parts Required
+Parts Required
 ========================
 
 + Flashforge Creator Pro 2 Mainboard Upgrade:
@@ -14,9 +14,11 @@ Purchased Parts Required
     + Microswiss Plated Copper High Temperature MK10 Heater Block Upgrade (M7 Threads): https://amzn.to/4skQPvj (qty: 2)
     + Ender-3-syle thermisters: https://amzn.to/49eT4HY (qty: 2)
   + Lighting Compatibility with Octopus Pro V1.1:
+    The existing LEDs can work with Octopus, but it uses up three fan PWM ports.  Replacing it with a Neopixel device is just easier.
     + Adafruit Industries NeoPixel Stick - 8 x 5050 RGBW LEDs: https://amzn.to/4pYJRul (qty: 2)
     + DuPont-style Header Pins 2.54mm: https://amzn.to/494a0lO (requires some soldering)
-    + Printed part: FFCP2 Neopixel + Camera Mounting Adapter-Body.step
+    + Mounting Bracket (printed): FFCP2 Neopixel + Camera Mounting Adapter-Body.step
+   + Screen Plug (printed): FFCP2 Screen Panel Plug-Body.step
 
 + Optional Features:
   + Camera:
