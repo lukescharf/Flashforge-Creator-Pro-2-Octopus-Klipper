@@ -8,7 +8,7 @@ Purchased Parts Required
 + Flashforge Creator Pro 2 Mainboard Upgrade
   + BIGTREETECH Octopus Pro v1.1 H723: https://amzn.to/4b8VYAA (qty: 1)
   + BIGTREETECH TMC2209 V1.3 Stepper Motor Driver: https://amzn.to/4971j8M (qty: 6)
-  + Klipper Pad: Dell Chromebook 11.6" 2-in-1 Touch Laptop Celeron 4GB Ram 32GB SSD running Debian 13, but nearly any Linux computer with a touchscreen and Raspberry Pi 3B (or better) specs should work - but used Chromebooks modified with the MrChromebook BIOS are an under-appreciated option as Klipper Pads go.  https://www.ebay.com/itm/236058833748
+  + Klipper Pad: Dell Chromebook 11.6" 2-in-1 Touch Laptop Celeron 4GB Ram 32GB SSD running Debian 13, but nearly any Linux computer with a touchscreen and Raspberry Pi 3B (or better) specs should work.  Used touchscreen Chromebooks modified with the MrChromebook BIOS are an under-appreciated option as Klipper Pads go.  https://www.ebay.com/itm/236058833748
 
 + Make Hotend compatible with Octopus Pro v1.1:
   + Microswiss Plated Copper High Temperature MK10 Heater Block Upgrade (M7 Threads): https://amzn.to/4skQPvj (qty: 2)
