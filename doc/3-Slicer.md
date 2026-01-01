@@ -9,12 +9,18 @@ Five Printing Modes
 ===================
 I devided to set up the printer to support each of the following modes, each with its own unique START_PRINT macro:
 
-  + START_PRINT_T0: Emulates a single-tool printer with the T0 toolhead selected.  Toolswapping commands (T0 and T1) are ignored.
-  + START_PRINT_T1: Emulates a single-tool printer with the T1 toolhead selected.  Toolswapping commands (T0 and T1) are ignored.
-  + START_PRINT_COPY: Emulates a single-tool printer with a bed that's roughly half the size of the full print-bed.  T1 follows T0 and it perform the exact same motions - so it prints two identical copies of your object.  Toolswapping commands (T0 and T1) are ignored.
-  + START_PRINT_MIRROR: Emulates a single-tool printer, but T1 mirrors T0's moves.  Toolswapping commands (T0 and T1) are ignored.
-  + START_PRINT_TOOLSWAPPER: Slicer support required for multicolor and multimaterial prints.  Toolswapping commands (T0 and T1) are honored.
+  + START_PRINT_T0:
+    Emulates a single-tool printer with the T0 toolhead selected.  Toolswapping commands (T0 and T1) are ignored.
+  + START_PRINT_T1:
+    Emulates a single-tool printer with the T1 toolhead selected.  Toolswapping commands (T0 and T1) are ignored.
+  + START_PRINT_COPY:
+    Emulates a single-tool printer with a bed that's roughly half the size of the full print-bed.  T1 follows T0 and it perform the exact same motions - so it prints two identical copies of your object.  Toolswapping commands (T0 and T1) are ignored.
+  + START_PRINT_MIRROR:
+    Emulates a single-tool printer, but T1 mirrors T0's moves.  Toolswapping commands (T0 and T1) are ignored.
+  + START_PRINT_TOOLSWAPPER:
+    Native mode.  Slicer support required for multicolor and multimaterial prints.  Toolswapping commands (T0 and T1) are honored.
 
 In order to support these modes chosen to configure 5 different logical printers in my slicer, each with the attributes suitable to each mode.
+
 
 
