@@ -1,5 +1,5 @@
-Slicer Setup for FFCP2+OK
--------------------------
+Slicer Setup for FFCP2+OK IDEX 3D printer
+-----------------------------------------
 
 IDEX Printer
 ============
@@ -25,6 +25,7 @@ I devided to set up the printer to support each of the following modes, each wit
     Native mode.  Slicer support required for multicolor and multimaterial prints.  Toolswapping commands (T0 and T1) are honored.
 
 In order to support these modes chosen to configure 5 different logical printers in my slicer, each with the attributes suitable to each mode.
+
 
 
 
