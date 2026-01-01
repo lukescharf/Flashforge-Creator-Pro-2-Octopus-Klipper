@@ -35,8 +35,3 @@ Procedure:
 1. Turn off the steppers
 2. With one hand on each side of the gantry, pull the gantry forward until it hits the forward end-stop
 3. Keep pulling.  The belt may skip teeth until it's aligned.
-
-Fine Skew Calibration
-=====================
-FIXME: See belt replacement procedure
-FIXME: See Klipper skew correction procedure
