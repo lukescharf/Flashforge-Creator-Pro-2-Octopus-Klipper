@@ -33,7 +33,7 @@ Parts Required
     + 230x150mm PEI Build Plate with magnetic base: https://amzn.to/4sCAeUf (qty: 1)
     + 230x150mm holographic build-plate: https://amzn.to/4qACtFz (cheap and good, despite looking like a novelty) 
 
-Cable Fabrication:
+Cable Fabrication & Workshop Supplies:  
   *Note: I keep these in stock by my electronics workbench and didn't need to purchase them for this project, but these parts are necessary for completing the project.*
   + JST-XH Connector Kit 2.54mm 2/3/4/5/6 Pin Housing: https://amzn.to/4ssbjCH
   + DuPont-style Connector Kit 2.54mm: https://amzn.to/3L6rbKf
