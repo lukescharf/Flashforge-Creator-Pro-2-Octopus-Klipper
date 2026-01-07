@@ -20,18 +20,18 @@ Notes:
 + Revisit this calibration after changing nozzles, or any mechanical changes to the hotend.
 
 Procedure:
-0. Preheat each nozzle and clean the tip with a paper towel to remove any excess filament around the orfice and the cone.  Allow the nozzles to cool.
-1. Home the Axes: `G28`
-2. Position the heads: `_POSITION_CENTER`
-3. Adjust the bed position using the motion controls and a 0.15mm (or 0.20mm) feeler gauge passed below both nozzles to position the lower nozzle at an apporpirate Z-height above the bed.
-4. Use the feeler gauge to determine the distance between the higher nozzle and the lower nozzle.
-5. Find the differece between the two feeler gauge measurements.  On the first printer I converted, the right nozzle was 0.18mm lower than the left nozzle.
-6. Position the heads for service: `_POSITION_SERVICE`
-7. Remove the lower toolhead from its X-carriage using a hex driver.
-8. Insert M3x6mm shim washers in the height closest to the Z-difference that you measured in Step 5.  In my case, I used M3x6x0.2mm shim washers to raise the lower toolhead by 0.2mm, which is about right for that printer.  Note that you can mix and match different thicknesses of shims front & back or side-to-side if you need a 0.05mm Z-height resolution for your particular printer.  **<-- This step is the main point of this procedure.**
-9. Re-attach the toolhead to its X-carriage using a hex driver.
-10. Repeat the procedure from Step 3, until you're satisfied that the Z-height is as close together as physically possible.
-11. Perform the standard Klipper Z-offset calibration to set your actual Z-offset.
+1. Preheat each nozzle and clean the tip with a paper towel to remove any excess filament around the orfice and the cone.  Allow the nozzles to cool.
+2. Home the Axes: `G28`
+3. Position the heads: `_POSITION_CENTER`
+4. Adjust the bed position using the motion controls and a 0.15mm (or 0.20mm) feeler gauge passed below both nozzles to position the lower nozzle at an apporpirate Z-height above the bed.
+5. Use the feeler gauge to determine the distance between the higher nozzle and the lower nozzle.
+6. Find the differece between the two feeler gauge measurements.  On the first printer I converted, the right nozzle was 0.18mm lower than the left nozzle.
+7. Position the heads for service: `_POSITION_SERVICE`
+8. Remove the lower toolhead from its X-carriage using a hex driver.
+9. Insert M3x6mm shim washers in the height closest to the Z-difference that you measured in Step 5.  In my case, I used M3x6x0.2mm shim washers to raise the lower toolhead by 0.2mm, which is about right for that printer.  Note that you can mix and match different thicknesses of shims front & back or side-to-side if you need a 0.05mm Z-height resolution for your particular printer.  **<-- This step is the main point of this procedure.**
+10. Re-attach the toolhead to its X-carriage using a hex driver.
+11. Repeat the procedure from Step 3, until you're satisfied that the Z-height is as close together as physically possible.
+12. Perform the standard Klipper Z-offset calibration to set your actual Z-offset.
 
 
 IDEX XY-Offset Calibration:
