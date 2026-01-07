@@ -36,7 +36,7 @@ Procedure:
 
 IDEX XY-Offset Calibration:
 =================================
-1. Print an XY-Offset Calibration test, like this one: https://www.printables.com/model/129617-offset-xy-dual-extruder-idex-calibration
+1. Print an XY-Offset Calibration test in IDEX/TOOLCHANGER mode: https://www.printables.com/model/129617-offset-xy-dual-extruder-idex-calibration
 2. Adjust the `t1_nozzle_adjust_*` variables in your printer `printer.cfg` based on what you learn.
 3. Repeat starting from Step 1 until the results meet the precision required from your multi-material prints.
 
