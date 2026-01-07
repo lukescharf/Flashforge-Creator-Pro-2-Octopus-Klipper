@@ -20,7 +20,7 @@ Notes:
 + Revisit this calibration after changing nozzles, or any mechanical changes to the hotend.
 
 Procedure:
-1. Preheat each nozzle and clean the tip with a paper towel to remove any excess filament around the orfice and the cone.  Allow the nozzles to cool.
+1. Preheat each nozzle and clean the tip with a paper towel to remove any excess filament around the orfice and the cone, since excess filament can throw off the feeler gauge readings.  The nozzles can be cool after this point.
 2. Home the Axes: `G28`
 3. Position the heads: `_POSITION_CENTER`
 4. Adjust the bed position using the motion controls and a 0.15mm (or 0.20mm) feeler gauge passed below both nozzles to position the lower nozzle at an apporpirate Z-height above the bed.
