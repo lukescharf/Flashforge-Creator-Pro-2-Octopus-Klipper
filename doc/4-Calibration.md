@@ -1,10 +1,12 @@
 Calibration Steps
 -----------------
 
-Bed Leveling
-============
-FIXME: Klipper has screw-leveling coordinates, need to write the procedure.
-
+Standard Klipper Calibration Steps
+==================================
+1. PID_CALIBRATE HEATER=extruder0 TARGET=220  # Use 240 if primarily printing ABS
+2. PID_CALIBRATE HEATER=extruder1 TARGET=220
+3. PID_CALIBRATE HEATER=heater_bed TARGET=55 # If primarily printing PLA
+4. Bed leveling using spring-screws.  The FFCP2 bed is very flat, but you need to be extermely precise here.
 
 Multi-Tool Z-Offset Calibration
 ===============================
