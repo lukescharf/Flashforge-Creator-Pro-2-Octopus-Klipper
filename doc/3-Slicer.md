@@ -78,8 +78,7 @@ The five modes are as follows:
 Detailed Setup
 ==============
 Files with the detailed setup of this printer for OrcaSlicer are available here:
-../slicer/
-
+[https://github.com/lukescharf/orca-profiles](https://github.com/lukescharf/orca-profiles)
 
 
 
