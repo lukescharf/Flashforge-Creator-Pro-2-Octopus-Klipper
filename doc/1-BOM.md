@@ -82,12 +82,19 @@ Replacing them with a NeoPixel device is just easier.
   the chamber thermistor to the printer's 2020 extrusion; the
   `voron_champber_thermister.link` file in `../cad/` points to the model.
 
-### PEI Print Bed Upgrade
+### Magnetic Base and CryoGrip Print Surface
 
-- [230 × 150 mm PEI Build Plate with magnetic base][pei-plate] (qty: 1).
-- [BIQU CryoGrip Glacier, 220 × 220 mm][cryogrip] (for Adventurer 5M, Ender 3,
-  Ender 3 V2, Ender 3 Pro, Ender 3S, CR20, Ender 5, and Sovol SV05). This fits
-  the FFCP2 reasonably well and is a great surface to print on.
+- [230 × 150 mm adhesive magnetic base with PEI spring-steel sheet][pei-plate]
+  (qty: 1 kit). This kit is purchased primarily for its adhesive magnetic base,
+  which attaches to the existing heated bed. Keep the included PEI sheet as an
+  alternative print surface or spare.
+- [BIQU CryoGrip Pro Glacier, 220 × 220 mm][cryogrip] (qty: 1). Select the
+  version for Adventurer 5M, Ender 3, Ender 3 V2, Ender 3 Pro, Ender 3S, CR20,
+  Ender 5, and Sovol SV05. This Ender 3-sized plate fits the FFCP2 reasonably
+  well, but is not an exact-size replacement; check overhang and clearance
+  throughout travel on your machine. It is the preferred everyday print
+  surface for this build. Place it directly on the installed magnetic base
+  instead of the PEI sheet; do not stack the two removable sheets.
 
 ## Cable Fabrication and Workshop Supplies
 
