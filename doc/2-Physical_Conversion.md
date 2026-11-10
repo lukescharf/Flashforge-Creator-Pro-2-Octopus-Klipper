@@ -11,7 +11,7 @@ This conversion and writeup build on **[Evil Azrael's Flashforge Creator Pro 2 d
 
 ## Prerequisites: Before taking the printer apart
 
-1. Read the [BOM](1-BOM.md), inventory the printed adapters in [`../cad/`](../cad/), and print the mounts while the stock printer still works. Print the pair of TPU `FFCP2 Service Mode Back-Foot.3mf` feet if you plan to rest the machine on its back; support it so the gantry, lid, and cables cannot take the load.
+1. Read the [BOM](1-BOM.md), inventory the printed adapters in [`../cad/`](../cad/), and print the mounts while the stock printer still works. Print four TPU `FFCP2 Service Mode Back-Foot.3mf` feet if you plan to rest the machine on its back; support it so the gantry, lid, and cables cannot take the load.
 2. Take photos of the stock board, supply/earth wiring, toolhead cable routing, and every intermediate connector. Draw a harness map from each signal to its eventual Octopus port. Save the original electronics and screws in labeled bags; this conversion should not depend on a guess about which identical-looking plug belonged to T0.
 
 ## Background: Configured travel and thermal limits
@@ -155,7 +155,15 @@ With mains and USB disconnected and power verified off, unplug the relevant conn
 * **Lighting/camera (required):** Replace the original lights with two 8-LED RGBW NeoPixel sticks and mount them together with the USB camera on `FFCP2 Neopixel + Camera Mounting Adapter-Body.step` (six M2 screws for devices, two M3 for the bracket). Solder the header pins, insulate exposed joints, and connect the 16 pixels as one data chain (controller data -> first stick DIN; first DOUT -> second DIN). Check the arrow/data direction, 5 V power budget, shared ground, and the actual `GRBW` color order before enabling full brightness. Route the USB camera to the host, not to a random MCU pin.
 * **Filament monitoring:** The BOM uses two BTT Smart Filament Sensor V2.0 units and PC6 PTFE guides/fittings. Mount one in each filament path with gentle bends and accessible service loops. Each sensor provides a presence switch and a motion signal: T0 uses PG12/PG13; T1 uses PG14/PG15. Follow the sensor's own connector pinout and supply-voltage specification, and test presence and motion separately. The configured `detection_length: 8.65` assumes the sensors are on the spool side of the path; tune it to your feed path after installation.
 * **Bed surface:** If fitting the BOM's magnetic base and PEI or CryoGrip plate, clean and align the existing bed, check clearance to clips and parked heads, and recheck Z endstop/offset after the added thickness. The listed surfaces are alternatives, not two plates to stack by default.
-* **Chamber monitoring/heating (required):** A Voron-style thermistor mount attaches to the 2020 extrusion (the CAD directory has a link to the external model). Secure it away from the heater's direct airflow so it represents chamber temperature. The config has `heater_generic chamber_heater` on PB0, with sensor PF6 and an SSR-oriented PWM cycle time. **The BOM does not specify an SSR, mains wiring, fusing, independent thermal cutoff, or a complete power/control design. Do not energize the chamber heater from this draft alone.** Install the BOM's heater with an appropriately rated, correctly driven switching device, overtemperature protection, wiring and enclosure using the heater's documentation and qualified electrical review. A software temperature limit (`max_temp: 65`) is not a substitute for independent protection.
+* **Chamber monitoring/heating (required):** A Voron-style thermistor mount attaches to the 2020 extrusion (the CAD directory has a link to the external model). Secure it away from the heater's direct airflow so it represents chamber temperature. The config has `heater_generic chamber_heater` on PB0, with sensor PF6 and an SSR-oriented PWM cycle time. This build uses a **120 V AC PTC heater** switched by the [SSR listed in the BOM](https://www.amazon.com/dp/B08GPJ1V2J); see the wiring notes below. A software temperature limit (`max_temp: 65`) is not a substitute for independent protection.
+
+### 120 V AC chamber-heater wiring
+
+The completed build's heater wiring was fabricated with **standard crimp-on ring terminals** rated for the circuit's amperage, as listed in the [BOM](1-BOM.md). Select terminals suitable for the actual conductor size/type, terminal studs, voltage, current and operating temperature; use a compatible crimping tool and check each termination mechanically. Keep mains connections enclosed and strain-relieved, separated from low-voltage wiring, and maintain the required protective-earth bonds. Do not use the DuPont or JST signal connectors in the workshop supplies list for mains wiring.
+
+PB0 (HE2 on the Octopus Pro v1.1) controls the SSR's input circuit; the **120 V AC heater load must not connect to the Octopus board**. The MCU pin name is not a physical wiring instruction: verify the HE2 output circuit, the SSR's control-input voltage/current and polarity, and the exact terminal assignments before connecting them. Confirm that the actual SSR is suitable for switching the AC heater load, including load current, derating, mounting and any required heatsink. The product link identifies the relay used, not a verified terminal diagram or rating for every replacement sold under that listing.
+
+**The exact mains harness, wire gauge, SSR control-terminal mapping, fusing, independent thermal cutoff and complete power/control design still need to be documented. Do not energize the chamber heater from this draft alone.** Have a qualified person verify the installation against the heater and SSR documentation, including independent overtemperature protection and safe disconnection. PTC behavior and Klipper's temperature limit do not replace those protections.
 
 ## First power-on and staged checks
 
@@ -169,7 +177,7 @@ With mains and USB disconnected and power verified off, unplug the relevant conn
 
 * Photos of stock and converted electronics, labeled connectors, and the exact FFCP2 harness-to-Octopus **v1.1** socket/ground/polarity map.
 * Measured PSU, bed, heater cartridge and fan ratings; power budget; the exact fan/driver/USB jumper positions used; and whether any stock connectors must be repinned.
-* Mounting and cable-routing photos for the rails, host, lights/camera, filament sensors and chamber sensor; complete circuit and independent safety details for the required chamber-heater installation.
+* Mounting and cable-routing photos for the rails, host, lights/camera, filament sensors and chamber sensor; the exact SSR installation, connector/terminal variants, wire gauge, mains and control-terminal map, and complete circuit and independent safety details for the required chamber-heater installation.
 
 ## Acknowledgements and references
 

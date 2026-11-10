@@ -72,8 +72,11 @@ Replacing them with a NeoPixel device is just easier.
 
 ### Chamber Heater and Monitoring
 
-- [Chamber heater (3D printer enclosure/chamber heater)][chamber-heater]
+- [120 V AC PTC chamber heater][chamber-heater]
   (qty: 1).
+- [Solid-state relay (SSR)][chamber-ssr] (qty: 1). The relay used in this
+  build to switch the 120 V AC PTC heater. Verify the actual unit's control-input
+  requirements, AC load rating, derating and heatsink requirements before wiring.
 - [Chamber thermistor (NTC 100K 3950)][thermistors] (qty: 1).
 - [Voron Chamber Thermistor Mount][thermistor-mount] (printed; qty: 1). Mounts
   the chamber thermistor to the printer's 2020 extrusion; the
@@ -95,15 +98,22 @@ Replacing them with a NeoPixel device is just easier.
 - JST-XH Connector Kit, 2.54 mm, 2/3/4/5/6-pin housings.
 - DuPont-style Connector Kit, 2.54 mm.
 - DuPont-style Locking Connector Kit, 2.54 mm.
+- Standard Crimp-On Ring Terminals (qty: as needed). Used for the 120 V AC
+  heater wiring; select terminals rated for the circuit's current, wire gauge,
+  stud size and insulation requirements, and use the appropriate crimping tool.
 - M3 Heat-Set Inserts (brass, knurled), assortment.
 - M3 Screws, socket head cap assortment with nuts and washers.
+- M3 Shim Washers, 6 mm OD, assorted thicknesses including 0.2 mm (qty: as
+  needed). For physically matching nozzle heights during
+  [IDEX Z-Offset Calibration](4-Calibration.md#idex-z-offset-calibration);
+  ordinary washers are not a substitute for precision shims.
 - Zip Ties, assorted.
 
 ## Service and Maintenance
 
 - `FFCP2 Service Mode Back-Foot.3mf` (printed; qty: 4): TPU feet that let the
   printer rest safely on its back for service. The 3MF contains one foot, so
-  print a pair; it is sliced at 0.2 mm layers, 3 walls, 25% infill, and a
+  print four; it is sliced at 0.2 mm layers, 3 walls, 25% infill, and a
   7 mm brim.
 
 [lighting-section]: #lighting-compatibility-with-octopus-pro-v11
@@ -119,6 +129,7 @@ Replacing them with a NeoPixel device is just easier.
 [ptfe-tubing]: https://www.amazon.com/dp/B0DKBLJDX1
 [pneumatic-fitting]: https://www.amazon.com/dp/B0C6GKKQKL
 [chamber-heater]: https://www.amazon.com/dp/B0F62STF3M
+[chamber-ssr]: https://www.amazon.com/dp/B08GPJ1V2J
 [thermistor-mount]: https://www.printables.com/model/549305-voron-chamber-thermistor-mount
 [pei-plate]: https://www.amazon.com/dp/B09MLNJR8D
 [cryogrip]: https://biqu.equipment/products/biqu-cryogrip-pro-glacier-build-plate

@@ -3,7 +3,7 @@ Calibration Steps
 
 Standard Klipper Calibration Steps
 ===================================================
-1. PID_CALIBRATE HEATER=extruder0 TARGET=220  # Use 240 if primarily printing ABS
+1. PID_CALIBRATE HEATER=extruder TARGET=220  # Use 240 if primarily printing ABS
 2. PID_CALIBRATE HEATER=extruder1 TARGET=220
 3. PID_CALIBRATE HEATER=heater_bed TARGET=55 # Use 100 if primarily printing ABS
 4. Bed leveling using bed-screws.  The FFCP2 bed is very flat, but extreme precision here pays off when performing the IDEX Z-Offset Calibration (nelow).
@@ -16,19 +16,19 @@ Prerequisite: Bed Leveling, to at least a 0.05mm precision.
 
 Notes:
 + The typical layer-height is around 0.2mm, and we need to be level to within a fraction of that height to get a consistent first layer in MIRROR or COPY modes.
-+ Requires a metric feeler gauge set.
++ A metric feeler gauge set is the standard tool. A Post-it note is a practical substitute for a 0.15mm–0.20mm feeler gauge when comparing nozzle clearances; paper thickness varies, so use it as a relative reference rather than a calibrated measurement.
 + Revisit this calibration after changing nozzles, or any mechanical changes to the hotend.
 
 Procedure:
 1. Preheat each nozzle and clean the tip with a paper towel to remove any excess filament around the orfice and the cone, since excess filament can throw off the feeler gauge readings.  The nozzles can be cool after this point.
 2. Home the Axes: `G28`
 3. Position the heads: `_POSITION_CENTER`
-4. Adjust the bed position using the motion controls and a 0.15mm (or 0.20mm) feeler gauge passed below both nozzles to position the lower nozzle at an apporpirate Z-height above the bed.
-5. Use the feeler gauge to determine the distance between the higher nozzle and the lower nozzle.
-6. Find the differece between the two feeler gauge measurements.  On the first printer I converted, the right nozzle was 0.18mm lower than the left nozzle.
+4. Adjust the bed position using the motion controls and a 0.15mm (or 0.20mm) feeler gauge, or a Post-it note, passed below both nozzles to position the lower nozzle at an appropriate Z-height above the bed.
+5. Use the feeler gauges to measure each nozzle's clearance from the bed. If using a Post-it note, compare the drag beneath both nozzles instead.
+6. Find the difference between the two feeler gauge measurements. On the first printer I converted, the right nozzle was 0.18mm lower than the left nozzle. If using a Post-it note, select shims iteratively until both nozzles produce similar drag rather than calculating a precise difference from the paper thickness.
 7. Position the heads for service: `_POSITION_SERVICE`
 8. Remove the lower toolhead from its X-carriage using a hex driver.
-9. Insert M3x6mm shim washers in the height closest to the Z-difference that you measured in Step 5.  In my case, I used M3x6x0.2mm shim washers to raise the lower toolhead by 0.2mm, which is about right for that printer.  Note that you can mix and match different thicknesses of shims front & back or side-to-side if you need a 0.05mm Z-height resolution for your particular printer.  **<-- This step is the main point of this procedure.**
+9. Insert M3x6mm shim washers in the height closest to the Z-difference that you calculated in Step 6.  In my case, I used M3x6x0.2mm shim washers to raise the lower toolhead by 0.2mm, which is about right for that printer.  Note that you can mix and match different thicknesses of shims front & back or side-to-side if you need a 0.05mm Z-height resolution for your particular printer.  **<-- This step is the main point of this procedure.**
 10. Re-attach the toolhead to its X-carriage using a hex driver.
 11. Repeat the procedure from Step 3, until you're satisfied that the Z-height is as close together as physically possible.
 12. Perform the standard Klipper Z-offset calibration to set your actual Z-offset.

@@ -1,86 +1,223 @@
-Slicer Setup for FFCP2+OK IDEX 3D printer
------------------------------------------
+# Slicer Setup for the FFCP2+OK IDEX 3D Printer
 
-IDEX Printer
-============
-FIXME: Explain what an IDEX printer is, to help contextualize what I say next.
+## IDEX Printer
 
-Slicer Choice
-=============
-I did most of the configuration and testing of this printer using Orca Slicer.  As a result, the slicer setup is oriented around Orca Slicer's quirks.  It should work OK with SuperSlicer and Prusa Slicer, but I haven't built and tested configurations for those printers.  FlashPrint 5, the printer's native slicer is unlikely to work because I didn't test my  macros for compatibility with its quirks -- the point of this upgrade is to bring this printer into the Klipper/Voron era.
+**IDEX** means **Independent Dual Extruder**. The Creator Pro 2 has two print
+heads that move independently along the same X gantry. Each head has its own
+extruder, heater, temperature sensor, and fans; both share the Y gantry and Z
+build platform. Unlike a fixed dual-nozzle carriage, one head can park outside
+the printing area while the other prints.
 
-Print Bed Dimensions
-====================
-Due to the risk of collissions between the tools, the different print-modes all have different usable areas.  A great writeup is provided by Evil Azreal's Wiki: https://wiki.evilazrael.de/en/flashforge-creator-pro-2
+In this conversion, **T0 is the left head** (`extruder` in Klipper) and **T1 is
+the right head** (`extruder1`). This differs from the tool numbering in some
+stock-printer profiles and other FFCP2 conversions.
 
-Key differences between his implementation and mine are that I chose to use the left print-head as T0, and I put the origin of my printable area (0,0,0) at the front-left corner of the area that both printheads can reach.  In other words, my (0,0,0) is in the lower-left hand corner of the region the right extruder can reach in Evil Azreal's diagram (https://wiki.evilazrael.de/ffcp2/print_regions.png), and the extent of the logical build-plate in TOOLSWAPPER/IDEX mode goes to the front-right corner of the area that the left roolhead can reach.
+The independent heads support three kinds of operation:
 
-What makes this complicated is that other print-modes (especialy COPY and MIRROR) have different constraints.  The print-heads in COPY mode never get close to each other, and the print-heads in MIRROR mode always get close to each other.  Each of these allows a different portion of the print-bed to be available.
+- **Toolswapping:** the slicer selects T0 or T1 for different parts of a print,
+  allowing two colors or materials, including a separate support material.
+- **COPY or MIRROR:** Klipper makes both heads print simultaneously from one
+  toolpath, producing either identical copies or a mirrored pair.
+- **Single tool:** only the selected head prints, so the printer behaves like
+  a conventional single-extruder machine.
 
-Five Print Modes
-================
-I decided to set up Klipper to support each of the following modes, each with its own unique START_PRINT macro.  In OrcaSclicer, I configured five logical printer since adjusting both the G-code macros and the bed dimensions every time would be error-prone.  Having five different logical printers, each with the START_PRINT_* macro for the mode and the coordinate system adjusted to accommodate the quirks of that mode, make it quick and easy to switch between the modes.
+These modes have different reach and collision constraints, which is why this
+guide uses five logical printer profiles rather than one universal profile.
 
-The five modes are as follows:
+## Slicer Choice
 
-  + START_PRINT_TOOLSWAPPER:
-    Native mode, also known as IDEX mode.  Slicer support required for multicolor and multimaterial prints.  Toolswapping commands (T0 and T1) are honored.
-    
-    In my OrcaSlicer configuration, this is the base setup from which the other configurations are derived.
+**OrcaSlicer is the recommended choice for this conversion.** I used it for most
+of the configuration and testing, and the profiles and start-code examples in
+this guide are built around its behavior.
 
-    Prinable Volume, Origin-offset: 200x150x 170mm, (0,0,0)
-    
-    Machine start code:
-    ```
-    START_PRINT_IDEX INITIAL_EXTRUDER={initial_extruder} BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}     EXTRUDER1_TEMP={first_layer_temperature[1]}
-    ```
-    
-  + START_PRINT_MIRROR:
-    Emulates a single-tool printer, but T1 mirrors T0's moves.  Toolswapping commands (T0 and T1) are ignored.
+Other slicers have the following caveats:
 
-    Prinable Volume, Origin-offset: 95x150x 170mm, (15,0,0)
+- **SuperSlicer and PrusaSlicer:** May work, but I haven't built or tested
+  profiles for them on this conversion. Some printer macros may need adapting to
+  match the quirks of how they generate G-code.
+- **FlashPrint 5:** Supporting the G-Code generated by FlashForge's native
+  slicer has not been a goal of this conversion.  The goal is to move beyond the
+  stock FlashPrint workflow and bring the printer into the Klipper/Voron
+  ecosystem.
 
-    Machine start code:
-    ```
-    START_PRINT_MIRROR BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
-    ```
-    
-  + START_PRINT_COPY:
-    Emulates a single-tool printer with a bed that's roughly half the size of the full print-bed.  T1 follows T0 and it perform the exact same motions - so it prints two identical copies of your object.  Toolswapping commands (T0 and T1) are ignored.
+## Print Bed Dimensions
 
-    Prinable Volume, Origin-offset: 115x150x 170mm, (15,0,0)
+The two heads cannot reach exactly the same regions of the bed (and
+build-plate), and their bodies must remain clear of one another. Consequently,
+each print mode has its own usable area. [Evil Azrael's FFCP2
+writeup][evil-wiki] and [bed-overlap diagram][print-regions] explain the
+underlying geometry.
 
-    Machine start code:
-    ```
-    START_PRINT_COPY BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
-    ```
-    
-  + START_PRINT_T0:
-    Emulates a single-tool printer with the T0 (left) toolhead selected.  Toolswapping commands (T0 and T1) are ignored.
+For this conversion, I chose to use T0 for the left head and put the XY origin
+`(0,0)` at the **lower-left (front-left) corner of the area that both T0 and T1
+can reach**. This is the shared reachable area's corner, not the physical
+build-plate corner or either carriage's homing position. The native IDEX profile
+uses that shared area, and I found this to be intuitive at the beginning of the
+project.
 
-    Prinable Volume, Origin-offset: 215x150x 170mm, (15,0,0)
-    
-    Machine start code:
-    ```
-    START_PRINT_T0 BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
-    ```
-    
-  + START_PRINT_T1:
-    Emulates a single-tool printer with the T1 (right) toolhead selected.  Toolswapping commands (T0 and T1) are ignored.
+**All five print modes (IDEX, T0, T1, COPY, MIRROR) adapt to this same
+reference.** Their slicer profiles adjust the printable areas and origin offsets
+for each mode rather than treating all carriage travel as printable bed area -
+even if they end up printing at negative coordinates. The origin offsets listed
+below are slicer-profile settings relative to this shared reference, not new
+physical endstop positions.
 
-    Prinable Volume, Origin-offset: 215x150x 170mm, (0,0,0)
+COPY maintains an offset between the heads, whereas MIRROR brings the heads
+toward one another as they approach the center. Each imposes different limits on
+the toolpath. The single-tool profiles can use more of the bed than the shared
+IDEX area because only one nozzle needs to reach the entire print.
+Anti-collission limits are defined in the printer, and the rest of the limits
+are defined in the slicer.
 
-    Machine start code:
-    ```
-    START_PRINT_T1 BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
-    ```
+The dimensions and offsets below retain this build's documented profile
+values. Verify them against your calibrated machine before printing, including
+clearance for skirts, brims, supports, and any purge structures. The axis
+travel limits in [Physical Conversion](2-Physical_Conversion.md) are not
+interchangeable with these printable dimensions.
 
-Detailed Setup
-==============
-Files with the detailed setup of this printer for OrcaSlicer are available here:
-[https://github.com/lukescharf/orca-profiles](https://github.com/lukescharf/orca-profiles)
+## Five Print Modes
 
+I configured five logical printers in OrcaSlicer. Each pairs a mode-specific
+`START_PRINT_*` macro with the appropriate printable volume and origin offset.
+This avoids editing both the start code and bed dimensions every time I switch
+modes.
 
+Each code block below belongs in that profile's **Machine start G-code**
+field. Keep each macro call on one line. The expressions in braces are
+OrcaSlicer placeholders, not literal commands to paste into the Klipper console.
+The macro names and parameter names correspond to
+[`config/Macros.cfg`](../config/Macros.cfg).
 
+### IDEX / Toolswapping: `START_PRINT_IDEX`
 
+Native dual-tool mode. The slicer must support multiple extruders and generate
+`T0` and `T1` commands to change tools; those commands are honored. In my
+OrcaSlicer setup, this is the base profile from which the other profiles are
+derived.
 
+- **Printable volume (X × Y × Z):** 200 × 150 × 170 mm.
+- **Origin offset (X, Y, Z):** `(0,0,0)` mm.
+
+Machine start G-code:
+
+```gcode
+START_PRINT_IDEX TOOL={initial_extruder} BED_TEMP={first_layer_bed_temperature[initial_extruder]} T0_TEMP={first_layer_temperature[0]} T1_TEMP={first_layer_temperature[1]}
+```
+
+`TOOL` chooses the initial physical tool; `T0_TEMP` and `T1_TEMP` specify its
+two nozzle temperatures independently. The current macro reads these names,
+not the older example's `INITIAL_EXTRUDER`, `EXTRUDER_TEMP`, and
+`EXTRUDER1_TEMP`. There is no `START_PRINT_TOOLSWAPPER` macro in the current
+configuration; toolswapping uses `START_PRINT_IDEX`.
+
+### MIRROR: `START_PRINT_MIRROR`
+
+Emulates a single-tool printer, but T1 mirrors T0's X moves while sharing its
+Y motion. Both heads print simultaneously. Subsequent `T0` and `T1` commands
+are ignored while the print mode is locked.
+
+- **Printable volume (X × Y × Z):** 95 × 150 × 170 mm per object.
+- **Origin offset (X, Y, Z):** `(15,0,0)` mm.
+
+Machine start G-code:
+
+```gcode
+START_PRINT_MIRROR BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
+```
+
+### COPY: `START_PRINT_COPY`
+
+Emulates a single-tool printer with a bed roughly half the full width. T1
+follows T0 at a fixed X offset, printing a second identical copy of the object.
+Subsequent `T0` and `T1` commands are ignored while the print mode is locked.
+
+- **Printable volume (X × Y × Z):** 115 × 150 × 170 mm per object.
+- **Origin offset (X, Y, Z):** `(15,0,0)` mm.
+
+Machine start G-code:
+
+```gcode
+START_PRINT_COPY BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
+```
+
+### T0 Only: `START_PRINT_T0`
+
+Emulates a single-tool printer with the left head selected. Subsequent `T0`
+and `T1` commands are ignored while the print mode is locked.
+
+- **Printable volume (X × Y × Z):** 215 × 150 × 170 mm.
+- **Origin offset (X, Y, Z):** `(15,0,0)` mm.
+
+Machine start G-code:
+
+```gcode
+START_PRINT_T0 BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
+```
+
+### T1 Only: `START_PRINT_T1`
+
+Emulates a single-tool printer with the right head selected. Subsequent `T0`
+and `T1` commands are ignored while the print mode is locked.
+
+- **Printable volume (X × Y × Z):** 215 × 150 × 170 mm.
+- **Origin offset (X, Y, Z):** `(0,0,0)` mm.
+
+Machine start G-code:
+
+```gcode
+START_PRINT_T1 BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}
+```
+
+The single-tool and COPY/MIRROR profiles use the slicer's first temperature
+entry (`[0]`). Their start macros select the physical head or heads; this is
+why the T1-only example still uses `first_layer_temperature[0]`.
+
+## Detailed Setup
+
+The profile repository linked by this project is
+[Luke Scharf's OrcaSlicer profiles][orca-profiles].
+
+**FIXME:** Confirm or publish the profile repository URL. The linked address
+returned HTTP 404 during this documentation review; it may be private or
+unavailable. The downloadable profiles could not be checked against the
+examples above.
+
+## Acknowledgements and References
+
+- **Evil Azrael:** [Flashforge Creator Pro 2 documentation][evil-wiki],
+  [bed-overlap diagram][print-regions], and [FFCP2 Klipper macros][evil-macros].
+  His reverse-engineering and explanations were important references for this
+  project's IDEX behavior, printable regions, and conversion writeup. This
+  project uses different tool numbering and an Octopus controller; do not copy
+  stock-board pin assignments or coordinate conventions without translating
+  them.
+- **Frank Paynter, Paynter's Palace:** [Klipperizing my Flashforge Creator Pro 2
+  3D Printer][paynter-klipper] and [FlashForge Creator Pro 2 IDEX Profile for
+  Prusa Slicer 2.3][paynter-slicer]. Related FFCP2 conversion and slicer work;
+  these describe the stock-printer approach, not a tested profile for this
+  Octopus conversion.
+- **OrcaSlicer contributors:** [OrcaSlicer Wiki][orca-wiki] and
+  [Placeholders and Expressions][orca-placeholders]. References for printer
+  profiles and custom G-code expressions. This guide documents the macros in
+  this repository rather than assuming another profile's start code applies.
+- **Klipper contributors:**
+  [Dual-carriage configuration][klipper-dual-carriage].
+  Reference for the independent carriages underlying toolswapping, COPY, and
+  MIRROR operation.
+- **Luke Scharf:** The FFCP2+OK configuration in
+  [`config/Components.cfg`](../config/Components.cfg),
+  [`config/Macros.cfg`](../config/Macros.cfg), and
+  [`config/printer.cfg`](../config/printer.cfg), together with the
+  [OrcaSlicer profile repository][orca-profiles] linked by this project.
+  These distinguish this conversion's tool numbering and macro interfaces
+  from the earlier stock-board work.
+
+[evil-wiki]: https://wiki.evilazrael.de/en/flashforge-creator-pro-2
+[print-regions]: https://wiki.evilazrael.de/ffcp2/print_regions.png
+[evil-macros]: https://github.com/eazrael/klipper/blob/ffcp2/config/printer-flashforge-creator-pro2-macros.cfg
+[paynter-klipper]: https://www.fpaynter.com/2024/10/klipperizing-my-flashforge-creator-pro-2-3d-printer/
+[paynter-slicer]: https://www.fpaynter.com/2021/09/flashforge-creator-pro-2-idex-profile-for-prusa-slicer-2-3/
+[orca-wiki]: https://github.com/OrcaSlicer/OrcaSlicer/wiki
+[orca-placeholders]: https://github.com/OrcaSlicer/OrcaSlicer/wiki/built_in_placeholders_variables
+[klipper-dual-carriage]: https://www.klipper3d.org/Config_Reference.html#dual_carriage
+[orca-profiles]: https://github.com/lukescharf/orca-profiles
