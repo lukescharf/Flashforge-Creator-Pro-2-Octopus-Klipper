@@ -70,10 +70,12 @@ Anti-collission limits are defined in the printer, and the rest of the limits
 are defined in the slicer.
 
 The dimensions and offsets below retain this build's documented profile
-values. Verify them against your calibrated machine before printing, including
-clearance for skirts, brims, supports, and any purge structures. The axis
-travel limits in [Physical Conversion](2-Physical_Conversion.md) are not
-interchangeable with these printable dimensions.
+values, except that the MIRROR width is derived from the current macros and
+configured carriage separation as explained below. Verify them against your
+calibrated machine before printing, including clearance for skirts, brims,
+supports, and any purge structures. The axis travel limits in
+[Physical Conversion](2-Physical_Conversion.md) are not interchangeable with
+these printable dimensions.
 
 ## Five Print Modes
 
@@ -116,8 +118,27 @@ Emulates a single-tool printer, but T1 mirrors T0's X moves while sharing its
 Y motion. Both heads print simultaneously. Subsequent `T0` and `T1` commands
 are ignored while the print mode is locked.
 
-- **Printable volume (X × Y × Z):** 95 × 150 × 170 mm per object.
+- **Printable volume (X × Y × Z):** 94.5 × 150 × 170 mm per object.
 - **Origin offset (X, Y, Z):** `(15,0,0)` mm.
+- **Toolpath X bounds:** -15 to 79.5 mm. Set the slicer origin 15 mm inside
+  the left edge of this profile's printable area.
+
+This width follows the current code, not a rounded half-bed dimension.
+`START_PRINT_MIRROR` calls `TMIRROR`, which calls `PARK_T0` and `PARK_T1` before
+enabling mirrored motion. With unshifted G-code coordinates, those parking
+commands put T0 at `position_min + 0.5 = -42.5` mm and T1 at
+`position_max - 0.5 = 241.5` mm. Mirrored motion therefore keeps
+`T0_X + T1_X = 199` mm, with a reflection center at X = 99.5 mm.
+
+The configured `safe_distance: 40` requires `199 - 2 * T0_X >= 40`, so the
+upper T0 X boundary is `(199 - 40) / 2 = 79.5` mm. From the profile's left
+boundary of -15 mm, that gives a width of `79.5 - (-15) = 94.5` mm.
+`_POSITION_CENTER` also commands T0 to X = 79.5 mm. This boundary uses exactly
+the configured 40 mm separation; it does not add a further clearance margin.
+The earlier 95 mm width would permit X = 80 mm and only 39 mm separation,
+which is outside the current code's allowed MIRROR range. The macros do not
+apply the slicer's 15 mm origin offset; configure the stated X bounds in the
+slicer and keep all generated moves within them.
 
 Machine start G-code:
 
