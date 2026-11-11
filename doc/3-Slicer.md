@@ -48,12 +48,13 @@ each print mode has its own usable area. [Evil Azrael's FFCP2
 writeup][evil-wiki] and [bed-overlap diagram][print-regions] explain the
 underlying geometry.
 
-For this conversion, I chose to use T0 for the left head and put the XY origin
-`(0,0)` at the **lower-left (front-left) corner of the area that both T0 and T1
-can reach**. This is the shared reachable area's corner, not the physical
-build-plate corner or either carriage's homing position. The native IDEX profile
-uses that shared area, and I found this to be intuitive at the beginning of the
-project.
+For this conversion, I chose to use T0 for the left head. **X = 0 is the left
+edge of the area reachable by both nozzles**, and **Y = 0 is the front edge of
+the build plate**. Positive Y runs toward the back of the machine. The Y axis
+homes toward the front, with its homing endstop configured at Y = -10 mm,
+10 mm in front of the build-plate origin. Neither axis's homing position defines
+the print origin. The native IDEX profile uses the shared reachable area, and I
+found this to be intuitive at the beginning of the project.
 
 **All five print modes (IDEX, T0, T1, COPY, MIRROR) adapt to this same
 reference.** Their slicer profiles adjust the printable areas and origin offsets

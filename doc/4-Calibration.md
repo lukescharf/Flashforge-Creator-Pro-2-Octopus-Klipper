@@ -77,10 +77,9 @@
 ### Gross Skew Calibration Notes
 
 - This is usually only necessary if the printer has been serviced, stored or
-  transported on its back. With the steppers off, the gantry can crash into the
-  back of the printer, and there is only an endstop on one side at the back of
-  the printer. The gantry crashing into the printer this way can cause the belt
-  to skip teeth on one side, leading to severe skew in printed objects.
+  transported on its back. With the steppers off, the gantry can strike the back
+  of the printer and cause a belt to skip teeth on one side, leading to severe
+  skew in printed objects.
 - Don't do this too often. It will eventually damage the belts and the toothed
   pulley.
 
