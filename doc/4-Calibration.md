@@ -5,9 +5,14 @@
 1. `PID_CALIBRATE HEATER=extruder TARGET=220` — Use 240 if primarily printing ABS.
 2. `PID_CALIBRATE HEATER=extruder1 TARGET=220`
 3. `PID_CALIBRATE HEATER=heater_bed TARGET=55` — Use 100 if primarily printing ABS.
-4. Bed leveling using bed-screws. The FFCP2 bed is very flat, but extreme
+4. `PID_CALIBRATE HEATER=chamber_heater TARGET=55` — Use your intended chamber
+   operating temperature, within component ratings and the configured 65°C limit.
+   Only run this after the chamber wiring, sensor and independent overtemperature
+   protection have been verified; see the
+   [chamber-heater safety notes](2-Physical_Conversion.md#120-v-ac-chamber-heater-wiring).
+5. Bed leveling using bed-screws. The FFCP2 bed is very flat, but extreme
    precision here pays off when performing the IDEX Z-Offset Calibration below.
-5. Standard Klipper Z-offset calibration (perform after bed leveling and IDEX
+6. Standard Klipper Z-offset calibration (perform after bed leveling and IDEX
    Z-Offset Calibration).
 
 ## IDEX Z-Offset Calibration
