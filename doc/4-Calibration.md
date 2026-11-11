@@ -1,10 +1,19 @@
 # Calibration Steps
 
+This printer is used primarily for **Polymaker PolyLite ASA**. Calibrate with
+that filament and the temperatures, cooling, and chamber conditions you intend
+to use for production prints. [Polymaker's PolyLite ASA guidance][polylite-asa]
+lists nozzle temperatures of 240–260°C and bed temperatures of 75–95°C. The
+250°C nozzle and 90°C bed targets below are examples within those ranges, not
+measured settings for every machine; use your actual printing targets and stay
+within the ratings of the installed components and print surface. Other
+materials need their own filament profiles and calibration.
+
 ## Standard Klipper Calibration Steps
 
-1. `PID_CALIBRATE HEATER=extruder TARGET=220` — Use 240 if primarily printing ABS.
-2. `PID_CALIBRATE HEATER=extruder1 TARGET=220`
-3. `PID_CALIBRATE HEATER=heater_bed TARGET=55` — Use 100 if primarily printing ABS.
+1. `PID_CALIBRATE HEATER=extruder TARGET=250` — Example PolyLite ASA nozzle target.
+2. `PID_CALIBRATE HEATER=extruder1 TARGET=250` — Calibrate both hotends.
+3. `PID_CALIBRATE HEATER=heater_bed TARGET=90` — Example PolyLite ASA bed target.
 4. `PID_CALIBRATE HEATER=chamber_heater TARGET=55` — Use your intended chamber
    operating temperature, within component ratings and the configured 65°C limit.
    Only run this after the chamber wiring, sensor and independent overtemperature
@@ -70,6 +79,42 @@
 3. Repeat starting from Step 1 until the results meet the precision required
    from your multi-material prints.
 
+## Filament Shrinkage Profiling
+
+Use [RutiluSS's Shrinkage tool][shrinkage-tool] to profile your filament before
+printing dimension-critical parts. The model is a 100 mm tool with inner and
+outer measurement features. Start with Polymaker PolyLite ASA for this printer,
+and repeat the process for other filaments rather than assuming one material's
+compensation applies to another.
+
+**Prerequisites:** Correct mechanical calibration and tuned filament temperature
+and flow settings. Shrinkage compensation does not replace fixing skew, belt
+problems, or incorrect extrusion.
+
+1. Print the tool at 100% object scale with material shrinkage compensation
+   disabled or set to its neutral value. Use your intended nozzle, bed and
+   chamber temperatures, cooling, and normal cooldown procedure so the result
+   represents your production prints.
+2. Let the tool cool fully to room temperature before measuring. Use calipers
+   to measure the model's nominal spans in X and Y; rotate and reprint the tool
+   if needed to test both directions. Compare corresponding inner and outer
+   features, avoiding first-layer bulges. If those measurements disagree,
+   investigate flow or horizontal-size errors rather than attributing every
+   error to uniform shrinkage.
+3. Record the measured dimensions and printing conditions in your filament
+   profile notes. Apply compensation using the slicer's filament-specific
+   shrinkage setting, following its percentage convention. If using object
+   scaling instead, calculate `scale (%) = nominal / measured * 100` for each
+   measured axis. For example, a nominal 100 mm span measuring 99.50 mm needs
+   approximately 100.50% scale. Do not apply both methods to compensate for the
+   same shrinkage, and do not change Klipper's `rotation_distance` to compensate
+   for a material-specific effect.
+4. Reprint with the correction enabled and verify the cooled dimensions. Save
+   the validated compensation in the appropriate filament profile or, if using
+   object scaling, record the scale factors for reuse. Recheck when changing
+   filament formulation or color, or substantially changing printing and cooling
+   conditions.
+
 ## Gross Skew Calibration
 
 **Prerequisites:** N/A.
@@ -91,3 +136,5 @@
 3. Keep pulling. The belt may skip teeth until it's aligned.
 
 [xy-offset-test]: https://www.printables.com/model/129617-offset-xy-dual-extruder-idex-calibration
+[shrinkage-tool]: https://www.printables.com/model/375254-shrinkage-tool
+[polylite-asa]: https://polymaker.com/product/polylite-asa

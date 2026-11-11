@@ -3,6 +3,11 @@ Physical Conversion: Flashforge Creator Pro 2 -> FFCP2+OK
 
 This is a **rough build draft**, not a pin-by-pin harness drawing. It describes the physical changes behind the configuration in [`../config/`](../config/) and the parts in the [BOM](1-BOM.md). This build keeps the Creator Pro 2's IDEX mechanics (two independent X carriages), Y gantry, Z bed, and much of its wiring, but replaces the stock controller with a BIGTREETECH Octopus Pro **v1.1, STM32H723**, running Klipper. T0 is the **left** head and T1 is the **right** head throughout this repository. Do not assume another FFCP2 or Octopus revision has the same connector order, voltage, or wire colors.
 
+This printer is used primarily for **Polymaker PolyLite ASA**. Tune the filament
+profile for that material and the installed print surface; see
+[Calibration](4-Calibration.md), including filament shrinkage profiling. The
+configured thermal limits below are safety bounds, not ASA print settings.
+
 This conversion and writeup build on **[Evil Azrael's Flashforge Creator Pro 2 documentation](https://wiki.evilazrael.de/en/flashforge-creator-pro-2)** and his FFCP2 Klipper configuration. His reverse-engineering and explanations were an important reference during this project. Other sources are credited where used and in [Acknowledgements and references](#acknowledgements-and-references) below.
 
 **BTT board references:** [Octopus Pro v1.1 pinout](https://github.com/bigtreetech/BIGTREETECH-OCTOPUS-Pro/blob/master/Hardware/BIGTREETECH%20Octopus%20Pro%20V1.1-Pin.jpg), [BTT Octopus Pro product manual (English PDF)](https://github.com/bigtreetech/BIGTREETECH-OCTOPUS-Pro/blob/master/BTT_Octopus_pro_EN.pdf), and [BTT's v1.1 revision notes](https://github.com/bigtreetech/BIGTREETECH-OCTOPUS-Pro#octopus-pro-v11). **The PDF describes v1.0**, not v1.1; use the v1.1 pinout and revision notes for actual v1.1 wiring and pin assignments. BTT does not appear to publish a separate v1.1 English PDF manual in that repository.

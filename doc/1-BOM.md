@@ -6,9 +6,7 @@ Klipper-based FFCP2+OK.
 ## Parts Required
 
 Printed parts are called out next to the purchased parts they support. Printable
-files are in [`../cad/`](../cad/). Print rigid brackets in ABS or ASA; PETG is a
-reasonable substitute for external mounts and cable clips. The service-mode foot
-is designed for TPU.
+files are in [`../cad/`](../cad/). This printer is my main ASA/ABS printer, and it has been calibrated on Polymaker Polylite ASA for the most part.  I recommend using this filament whenever possible.  However, if you can only print in PLA, most of the parts will work well enough in PLA that you can re-print them later in ASA once you get the printer up and running.
 
 ### Mainboard
 

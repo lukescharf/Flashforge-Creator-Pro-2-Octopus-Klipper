@@ -30,6 +30,12 @@ guide uses five logical printer profiles rather than one universal profile.
 of the configuration and testing, and the profiles and start-code examples in
 this guide are built around its behavior.
 
+This printer is used primarily with **Polymaker PolyLite ASA**. Keep its tuned
+temperature, cooling, and shrinkage settings in an ASA filament profile rather
+than treating them as universal settings for other materials. Use the
+[filament shrinkage profiling procedure](4-Calibration.md#filament-shrinkage-profiling)
+to measure and compensate for dimensional changes in your filament.
+
 Other slicers have the following caveats:
 
 - **SuperSlicer and PrusaSlicer:** May work, but I haven't built or tested
