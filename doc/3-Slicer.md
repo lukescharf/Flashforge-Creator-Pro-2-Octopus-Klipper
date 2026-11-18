@@ -95,7 +95,8 @@ Each code block below belongs in that profile's **Machine start G-code**
 field. Keep each macro call on one line. The expressions in braces are
 OrcaSlicer placeholders, not literal commands to paste into the Klipper console.
 The macro names and parameter names correspond to
-[`config/Macros.cfg`](../config/Macros.cfg).
+[`config/Print_Start.cfg`](../config/Print_Start.cfg), loaded
+through [`config/printer.cfg`](../config/printer.cfg).
 
 ### IDEX / Toolswapping: `START_PRINT_IDEX`
 
@@ -234,7 +235,7 @@ examples above.
   MIRROR operation.
 - **Luke Scharf:** The FFCP2+OK configuration in
   [`config/Components.cfg`](../config/Components.cfg),
-  [`config/Macros.cfg`](../config/Macros.cfg), and
+  [macro topic files](../config/), and
   [`config/printer.cfg`](../config/printer.cfg), together with the
   [OrcaSlicer profile repository][orca-profiles] linked by this project.
   These distinguish this conversion's tool numbering and macro interfaces
