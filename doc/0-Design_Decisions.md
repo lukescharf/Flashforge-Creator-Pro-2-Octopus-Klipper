@@ -5,7 +5,8 @@ than providing assembly instructions. The [BOM](1-BOM.md),
 [physical-conversion draft](2-Physical_Conversion.md),
 [slicer setup](3-Slicer.md), and [calibration guide](4-Calibration.md)
 cover the implementation. The current source of truth for behavior is
-[`config/Macros.cfg`](../config/Macros.cfg).
+the topic files in [`config/`](../config/), loaded through
+[`config/printer.cfg`](../config/printer.cfg).
 
 ## 0. Goal: Functional ASA/ABS Parts with Dissolvable Supports
 
@@ -62,7 +63,8 @@ work out the physical mounting yourself.
 I chose to implement the different print modes as five separate logical printers
 in OrcaSlicer. Each profile selects a mode through its **Machine start G-code**
 and supplies the matching printable volume and origin, which vary substantially
-by print mode. The G-code start macros defined in `Macros.cfg` are:
+by print mode. The G-code start macros defined in
+[`config/Print_Start.cfg`](../config/Print_Start.cfg) are:
 
 | Mode | Start macro | When to choose it |
 | --- | --- | --- |
@@ -263,7 +265,7 @@ printing speeds and chamber temperatures.
 - [BTT Octopus Pro repository][octopus-pro]: v1.1 revision notes, pinouts, and
   driver-supply warnings.
 - [`Components.cfg`](../config/Components.cfg),
-  [`Macros.cfg`](../config/Macros.cfg), and
+  [macro topic files](../config/), and
   [`printer.cfg`](../config/printer.cfg): implemented hardware configuration,
   mode/temperature behavior, and machine-specific tunables.
 - [Major Change Log](../README.md#major-change-log): dated milestones,
