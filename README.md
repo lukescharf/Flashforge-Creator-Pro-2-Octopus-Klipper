@@ -32,13 +32,16 @@ Read the guides in order:
 | [2. Physical Conversion](doc/2-Physical_Conversion.md) | Controller installation, wiring references, safety, and staged first-power-on checks. |
 | [3. Slicer Setup](doc/3-Slicer.md)                     | OrcaSlicer, the five print modes, printable areas, and start G-code.                   |
 | [4. Calibration](doc/4-Calibration.md)                 | Heater PID, bed leveling, nozzle alignment, XY offsets, filament shrinkage, and skew.  |
+| [5. Klipper G-Code Style Guide](doc/5-GCODE-Style-Guide.md) | Voron-informed formatting, macro-scoped documentation, state handling, and review standards. |
+
+Guide 5 is a maintainer reference for writing and reviewing configuration changes.
 
 **Repository layout:**
 
 - [`config/`](config/) — Klipper configuration and macros. See the
   [configuration layout](#configuration-layout) for topic files and migration notes.
 - [`cad/`](cad/) — CAD models and printable-part designs.
-- [`doc/`](doc/) — Conversion, slicer setup, and calibration guides listed above.
+- [`doc/`](doc/) — Conversion, slicer setup, calibration, and G-Code style guides.
 - [`bin/`](bin/) — Host display-orientation scripts.
 
 > **Build status and safety:** The physical-conversion guide is a rough draft,
@@ -73,9 +76,12 @@ Capitalized hardware/topic filenames distinguish repository-managed files from
 local integration files in `printer_data/config`.  I symlink from
 `printer_data/config` into my repo to keep everything consistent. Includes are
 explicit rather than wildcard-based, so unrelated `.cfg` files are not loaded
-automatically.  I'm gradually migrating these files toward following Voron
-community-style section headers, indentation, grouped settings, and macro
-descriptions.  I'm also using LLMs to deep-lint my Klipper G-Code.
+automatically. I'm gradually migrating these files toward the
+[Klipper G-Code style guide](doc/5-GCODE-Style-Guide.md), which draws on published
+Voron configurations and community documentation while identifying local choices,
+including macro-scoped comment blocks. I'm using LLM-based tools to deep-lint my
+Klipper G-Code and to ensure a consistent style, while applying conventional
+testing and review practices tailored for a homelab-style side-project.
 
 **Updating an existing installation:** Deploy all repository `.cfg` files in
 `config/` together, replacing the old `[include Macros.cfg]` with the direct
