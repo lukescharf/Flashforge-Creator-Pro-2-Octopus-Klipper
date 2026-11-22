@@ -1,0 +1,8 @@
+{
+    "from": "User",
+    "inherits": "FFCP2+OK 0.2mm Functional",
+    "is_custom_defined": "0",
+    "name": "FFCP2+OK 0.2mm Functional PLA",
+    "print_settings_id": "FFCP2+OK 0.2mm Functional PLA",
+    "version": "1.7.0.2"
+}

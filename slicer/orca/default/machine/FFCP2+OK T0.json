@@ -1,0 +1,49 @@
+{
+    "default_nozzle_volume_type": [
+        "Standard"
+    ],
+    "extruder_colour": [
+        "#018001"
+    ],
+    "extruder_offset": [
+        "0x0"
+    ],
+    "extruder_printable_height": [
+        "0"
+    ],
+    "extruder_type": [
+        "Direct Drive"
+    ],
+    "extruder_variant_list": [
+        "Direct Drive Standard"
+    ],
+    "from": "User",
+    "inherits": "FFCP2+OK IDEX",
+    "machine_start_gcode": "START_PRINT_T0 BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER_TEMP={first_layer_temperature[0]}",
+    "max_layer_height": [
+        "0.3"
+    ],
+    "min_layer_height": [
+        "0.08"
+    ],
+    "name": "FFCP2+OK T0",
+    "nozzle_diameter": [
+        "0.4"
+    ],
+    "printable_area": [
+        "-15x0",
+        "197x0",
+        "197x145",
+        "-15x145"
+    ],
+    "printer_extruder_id": [
+        "1",
+        "2"
+    ],
+    "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive Standard"
+    ],
+    "printer_settings_id": "FFCP2+OK T0",
+    "version": "2.3.1.10"
+}

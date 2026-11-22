@@ -1,0 +1,14 @@
+{
+    "bottom_shell_layers": "5",
+    "enable_prime_tower": "1",
+    "flush_into_support": "0",
+    "from": "User",
+    "inherits": "FFCP2+OK 0.2mm Functional",
+    "is_custom_defined": "0",
+    "name": "FFCP2+OK 0.2mm Functional IDEX Multicolor",
+    "print_settings_id": "FFCP2+OK 0.2mm Functional IDEX Multicolor",
+    "support_filament": "2",
+    "support_interface_filament": "2",
+    "version": "1.7.0.2",
+    "wipe_tower_wall_type": "rib"
+}

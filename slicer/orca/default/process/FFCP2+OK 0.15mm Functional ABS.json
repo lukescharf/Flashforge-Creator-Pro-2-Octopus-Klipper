@@ -1,0 +1,13 @@
+{
+    "bottom_shell_layers": "5",
+    "brim_type": "outer_and_inner",
+    "flush_into_support": "0",
+    "from": "User",
+    "inherits": "FFCP2+OK 0.2mm Functional",
+    "is_custom_defined": "0",
+    "layer_height": "0.15",
+    "name": "FFCP2+OK 0.15mm Functional ABS",
+    "print_settings_id": "FFCP2+OK 0.15mm Functional ABS",
+    "seam_slope_type": "all",
+    "version": "1.7.0.2"
+}

@@ -1,0 +1,28 @@
+{
+    "default_filament_colour": [
+        "#C0C0C0"
+    ],
+    "filament_is_support": [
+        "1"
+    ],
+    "filament_settings_id": [
+        "FFCP2+OK HIPS"
+    ],
+    "filament_shrink": [
+        "99.47%"
+    ],
+    "filament_soluble": [
+        "1"
+    ],
+    "from": "User",
+    "hot_plate_temp": [
+        "100"
+    ],
+    "hot_plate_temp_initial_layer": [
+        "100"
+    ],
+    "inherits": "Generic HIPS template @FFCP2+OK IDEX",
+    "is_custom_defined": "0",
+    "name": "FFCP2+OK HIPS",
+    "version": "1.7.0.2"
+}
