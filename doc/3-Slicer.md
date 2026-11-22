@@ -76,9 +76,11 @@ IDEX area because only one nozzle needs to reach the entire print.
 Anti-collission limits are defined in the printer, and the rest of the limits
 are defined in the slicer.
 
-The dimensions and offsets below retain this build's documented profile
-values, except that the MIRROR width is derived from the current macros and
-configured carriage separation as explained below. Verify them against your
+The dimensions and offsets below match the bundled profiles in
+[`slicer/orca/`](../slicer/orca/). They retain a 145 mm Y range within the
+configured 150 mm travel, and T0 stops at X = 197 mm within its 200 mm travel.
+The MIRROR width is derived from the current macros and configured carriage
+separation as explained below. Verify them against your
 calibrated machine before printing, including clearance for skirts, brims,
 supports, and any purge structures. The axis travel limits in
 [Physical Conversion](2-Physical_Conversion.md) are not interchangeable with
@@ -105,7 +107,7 @@ Native dual-tool mode. The slicer must support multiple extruders and generate
 OrcaSlicer setup, this is the base profile from which the other profiles are
 derived.
 
-- **Printable volume (X × Y × Z):** 200 × 150 × 170 mm.
+- **Printable volume (X × Y × Z):** 200 × 145 × 170 mm.
 - **Origin offset (X, Y, Z):** `(0,0,0)` mm.
 
 Machine start G-code:
@@ -126,7 +128,7 @@ Emulates a single-tool printer, but T1 mirrors T0's X moves while sharing its
 Y motion. Both heads print simultaneously. Subsequent `T0` and `T1` commands
 are ignored while the print mode is locked.
 
-- **Printable volume (X × Y × Z):** 94.5 × 150 × 170 mm per object.
+- **Printable volume (X × Y × Z):** 94.5 × 145 × 170 mm per object.
 - **Origin offset (X, Y, Z):** `(15,0,0)` mm.
 - **Toolpath X bounds:** -15 to 79.5 mm. Set the slicer origin 15 mm inside
   the left edge of this profile's printable area.
@@ -160,7 +162,7 @@ Emulates a single-tool printer with a bed roughly half the full width. T1
 follows T0 at a fixed X offset, printing a second identical copy of the object.
 Subsequent `T0` and `T1` commands are ignored while the print mode is locked.
 
-- **Printable volume (X × Y × Z):** 115 × 150 × 170 mm per object.
+- **Printable volume (X × Y × Z):** 115 × 145 × 170 mm per object.
 - **Origin offset (X, Y, Z):** `(15,0,0)` mm.
 
 Machine start G-code:
@@ -174,8 +176,9 @@ START_PRINT_COPY BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUD
 Emulates a single-tool printer with the left head selected. Subsequent `T0`
 and `T1` commands are ignored while the print mode is locked.
 
-- **Printable volume (X × Y × Z):** 215 × 150 × 170 mm.
+- **Printable volume (X × Y × Z):** 212 × 145 × 170 mm.
 - **Origin offset (X, Y, Z):** `(15,0,0)` mm.
+- **Toolpath X bounds:** -15 to 197 mm.
 
 Machine start G-code:
 
@@ -188,7 +191,7 @@ START_PRINT_T0 BED_TEMP={first_layer_bed_temperature[initial_extruder]} EXTRUDER
 Emulates a single-tool printer with the right head selected. Subsequent `T0`
 and `T1` commands are ignored while the print mode is locked.
 
-- **Printable volume (X × Y × Z):** 215 × 150 × 170 mm.
+- **Printable volume (X × Y × Z):** 215 × 145 × 170 mm.
 - **Origin offset (X, Y, Z):** `(0,0,0)` mm.
 
 Machine start G-code:
@@ -201,15 +204,269 @@ The single-tool and COPY/MIRROR profiles use the slicer's first temperature
 entry (`[0]`). Their start macros select the physical head or heads; this is
 why the T1-only example still uses `first_layer_temperature[0]`.
 
-## Detailed Setup
+### Chamber temperature, fans, and end G-code
 
-The profile repository linked by this project is
-[Luke Scharf's OrcaSlicer profiles][orca-profiles].
+None of the `START_PRINT_*` macros reads `CHAMBER_TEMP`. Chamber control uses
+`M141 S<temperature>` or `M191 S<temperature>` from
+[`config/Temperature.cfg`](../config/Temperature.cfg). The profiles enable
+Orca's chamber-temperature support; use the filament's chamber settings and
+check the generated chamber commands rather than adding a start-macro parameter.
+`M141` waits for heating and conditionally for cooling; `M191` waits within
+±7% of its positive target and can use the bed to assist heating.
 
-**FIXME:** Confirm or publish the profile repository URL. The linked address
-returned HTTP 404 during this documentation review; it may be private or
-unavailable. The downloadable profiles could not be checked against the
-examples above.
+All five profiles inherit this **Machine end G-code** from the IDEX base:
+
+```gcode
+CONTROLLED_COOLDOWN S=45 R=1.3 MOVE=1     ; Cool down ABS (and other filaments) carefully
+END_PRINT
+```
+
+`S` is the final bed ramp target in °C, `R` is the target reduction rate in
+°C/min, and `MOVE=1` permits parking on already-homed axes. Cooldown turns off
+the bed and chamber heaters after the ramp and waits for both to cool to at
+most `S + 3` °C. `END_PRINT` turns off heaters and part fans, positions for
+unloading, and releases the mode lock; it does not initiate controlled cooling.
+
+The filament presets' `M106 P3` commands are intentional no-ops: this build
+has no enclosure fan. `M106 P2` is also ignored. `M106` without `P`, or with
+`P0`/`P1`, controls the active part fan (both fans in COPY/MIRROR); `M107`
+turns part cooling off. See [`config/Fans.cfg`](../config/Fans.cfg).
+
+## Orca Slicer Detailed Setup
+
+The bundled [`slicer/orca/`][orca-profiles] directory contains **24 presets:
+five machine, nine filament, and ten process profiles**. These are Orca user
+presets for this conversion, not a generic Voron preset bundle. The comparison
+below uses a conventional single-tool, enclosed Voron-style Klipper printer as
+the reference; individual Voron configurations and macro interfaces vary.
+
+### File layout and inheritance
+
+| Directory under `slicer/orca/default/` | Contents |
+| --- | --- |
+| `machine/base/` | The complete `FFCP2+OK IDEX` machine preset. |
+| `machine/` | T0, T1, COPY, and MIRROR overrides, each inheriting from IDEX. |
+| `filament/base/` | PLA, generic ABS/ASA/HIPS/PET/PVA templates, and an unused-tool placeholder. |
+| `filament/` | The customized `FFCP2+OK ABS` and `FFCP2+OK HIPS` presets. |
+| `process/base/` | The common `FFCP2+OK 0.2mm Functional` process preset. |
+| `process/` | Nine overrides for PLA, ABS, Gridfinity, multicolor, and ABS+HIPS supports. |
+
+The `.json` files hold the actual settings. Each has an `.info` sidecar whose
+cloud-sync identifiers have been cleared and timestamp reset. The top-level
+`.gitignore` only excludes editor-generated files.
+
+Orca resolves `inherits` using the preset's internal `name`, not its relative
+file path. Include the base presets when transferring these profiles, and keep
+their names intact. In particular, `UNUSED @FFCP2+OK IDEX.json` has the internal
+name `Unused PLA Placeholder @FFCP2+OK IDEX`. A short child JSON contains only
+overrides: an omitted setting still comes from its parent. The filament bases
+and process base identify `FFCP2+OK IDEX` in `compatible_printers`; the other
+machine modes inherit from that machine.
+
+### Machine presets: one printer, five slicing modes
+
+A conventional single-tool Voron generally needs one machine geometry and one
+start sequence. Here, selecting a machine preset also selects how Klipper
+coordinates the two independent carriages. The five presets combine the start
+macros and printable bounds documented above:
+
+| Preset | Nozzles presented to the slicer | Physical behavior |
+| --- | --- | --- |
+| `FFCP2+OK IDEX` | Two 0.4 mm nozzles | Independent T0/T1 toolpaths and temperatures. |
+| `FFCP2+OK T0` | One 0.4 mm nozzle | Left head only. |
+| `FFCP2+OK T1` | One 0.4 mm nozzle | Right head only, despite using slicer temperature entry `[0]`. |
+| `FFCP2+OK COPY` | One 0.4 mm nozzle | Klipper duplicates one toolpath on both heads. |
+| `FFCP2+OK MIRROR` | One 0.4 mm nozzle | Klipper mirrors one toolpath on both heads. |
+
+COPY and MIRROR do not ask Orca to place two objects or generate two toolpaths.
+Their single-nozzle temperature is applied to both physical heaters. Native
+IDEX instead passes `TOOL`, `T0_TEMP`, and `T1_TEMP`, allowing the first printing
+head and each nozzle's temperature to differ. T0/T1/COPY/MIRROR lock the mode
+against subsequent tool-selection commands; native IDEX permits tool changes.
+
+The machine base uses Klipper G-code, relative extrusion, and slicer-generated
+retraction (`use_firmware_retraction=0`). Its nominal retraction is 0.8 mm at
+35 mm/s, with 0.2 mm Z hop. Both nozzle offsets are `0x0` in Orca: physical
+alignment compensation belongs to `OFFSET_T0`/`OFFSET_T1` in
+[`config/printer.cfg`](../config/printer.cfg). This avoids applying the same
+head-alignment correction in both the slicer and firmware. The mode-specific
+bed origins are a separate matter from nozzle alignment.
+
+This is also not a single-nozzle filament-changing system:
+`single_extruder_multi_material` and `manual_filament_change` are disabled, and
+the custom `change_filament_gcode` field is empty. Normal tool selections are
+handled by the `T0`/`T1` macros in
+[`config/Toolheads.cfg`](../config/Toolheads.cfg), which park the other head,
+select the carriage and extruder, and manage offsets, fans, and sensors.
+
+The start sequence is delegated to this repository's `START_PRINT_*` macros,
+rather than assuming a Voron installation's `PRINT_START` parameters or its
+gantry-leveling and bed-mesh sequence. Single-tool and COPY/MIRROR startup call
+`PRIME_LINE`; native IDEX startup does not. All modes inherit the explicit
+controlled-cooldown/end sequence described above. The machine pause G-code
+field is empty even though the firmware provides a `PAUSE` macro.
+
+### Filament presets: independent materials and temperatures
+
+The nine filament presets separate material behavior from machine mode:
+
+| Preset or template | Important settings in the files |
+| --- | --- |
+| `FFCP2+OK PLA` | 220°C nozzle, 10 mm³/s volumetric limit; the machine's default filament. |
+| Generic ABS | 260°C first layer / 270°C thereafter; parent of the customized ABS preset. |
+| Generic ASA | 260°C nozzle; a generic template, not a separately tuned PolyLite ASA preset. |
+| Generic HIPS | 240°C nozzle, 8 mm³/s volumetric limit; not marked as support or soluble until overridden. |
+| Generic PET | Internally uses filament type `PETG`, with a 255°C nozzle. |
+| Generic PVA | 220°C nozzle; marked as soluble support material. |
+| Unused PLA placeholder | Both nozzle-temperature entries are zero; represents an unused tool slot. |
+| `FFCP2+OK ABS` | Overrides its parent to 245°C nozzle, active 60°C chamber control, and 99.47% shrinkage setting. |
+| `FFCP2+OK HIPS` | Marks HIPS as soluble support and applies the same 99.47% shrinkage setting. |
+
+Bed temperatures depend on the selected plate type. For example, the customized
+ABS preset sets the **hot-plate** entries to 95°C for the first layer and 80°C
+thereafter, while HIPS sets both hot-plate entries to 100°C. These overrides do
+not replace every plate-specific temperature inherited from the templates.
+Two nozzles can run at different temperatures, but the bed and chamber remain
+shared resources; the materials must be suitable for the same environment.
+
+The unused-tool placeholder is not a printable material: its zero temperature
+causes the IDEX start macro to skip that nozzle's heating/wait branches. It does
+not itself disable toolpaths or turn off an already-hot nozzle. Use the T0/T1
+machine profiles for ordinary single-head jobs.
+
+All seven filament bases have `enable_pressure_advance=0`. Their stored
+`pressure_advance=0.02` value therefore does not enable a slicer-driven pressure
+advance override. Likewise, most templates have chamber control disabled; the
+customized ABS preset explicitly enables it. The `M106 P3` snippets in filament
+start/end G-code do not operate an exhaust fan on this build. These details
+matter when coming from a Voron setup that uses filament presets to control
+pressure advance, chamber heat, or an exhaust filter.
+
+The generic temperatures and flow limits are starting values, not evidence of
+calibration for a particular spool or hotend. The customized ABS/HIPS shrinkage
+values are also build/material-specific; use the
+[calibration guide](4-Calibration.md#filament-shrinkage-profiling) when adapting
+them.
+
+### Process presets: structural parts and two-nozzle supports
+
+The common `FFCP2+OK 0.2mm Functional` base uses 0.2 mm layers, four walls,
+20% gyroid infill, 25 mm/s inner and outer walls, and 1000 mm/s² default
+acceleration. Supports, the prime tower, and ooze prevention are disabled by
+default. The stored standby-temperature delta of -5°C does not enable ooze
+prevention. Model walls and infill use filament slot 1.
+
+#### Printing speeds and their purpose
+
+These conservative printing speeds were chosen experimentally for
+**high-quality ASA/ABS printing**, prioritizing consistent extrusion, surface
+finish, and reliable overhangs over throughput. They are not high-speed Voron
+tuning values. Higher printing speeds may be possible, but would require
+grippier extruders—possibly an Orbiter 3.5—and more careful tuning of extrusion,
+temperature, volumetric flow, pressure advance, and cooling. That extruder is
+a possible upgrade, not a tested configuration represented by these files.
+
+The values below come from
+`process/base/FFCP2+OK 0.2mm Functional.json`. **All bundled process presets
+currently use the same effective speed settings**, including Functional PLA,
+the thinner-layer ABS variants, and the IDEX variants. The 0.2 mm Functional
+ABS and Gridfinity ABS files explicitly repeat some speeds, but those entries
+equal the base values. There is no separate faster PLA speed schedule or
+dedicated ASA process preset in this bundle.
+
+| Feature | ASA/ABS-oriented base and ABS variants | Functional PLA | What it controls and why it matters |
+| --- | --- | --- | --- |
+| First-layer walls (`initial_layer_speed`) | 15 mm/s | 15 mm/s | Slow initial outlines help establish adhesion and consistent extrusion on the plate. |
+| First-layer infill | 20 mm/s | 20 mm/s | Fills the first layer slightly faster than its outlines while keeping deposition controlled. |
+| Outer walls | 25 mm/s | 25 mm/s | Visible contours; a restrained speed favors surface finish and dimensional consistency. |
+| Inner walls | 25 mm/s | 25 mm/s | Structural perimeters behind the outer wall; the same speed avoids a large change in extrusion demand between walls. |
+| Sparse infill | 50 mm/s | 50 mm/s | The partially filled interior, where appearance is less critical than on exposed walls. |
+| Internal solid infill | 50 mm/s | 50 mm/s | Fully filled internal layers, including the foundation beneath top surfaces. |
+| Top surface | 50 mm/s | 50 mm/s | Exposed solid top layers; this is a separate setting from outer-wall speed. |
+| Gap infill | 50 mm/s | 50 mm/s | Narrow regions left between other extrusion paths. Short paths may not reach this requested speed. |
+| External bridges | 10 mm/s | 10 mm/s | Extrusion spanning unsupported gaps, with time for the strand to stabilize. |
+| Internal bridges | 10 mm/s | 10 mm/s | Unsupported spans inside the model, such as solid layers bridging over infill. |
+| Overhang bands 1/4, 2/4, 3/4, 4/4 | 15 / 11.67 / 8.33 / 5 mm/s | Same | Progressively slower speeds as the unsupported portion of a wall increases. Overhang-speed control is enabled. |
+| Support body | 50 mm/s | 50 mm/s | The bulk of generated support structures; only used when supports are enabled. |
+| Support interface | 50 mm/s | 50 mm/s | The contact layers between supports and the model, including the HIPS interfaces in the IDEX presets. |
+| Skirt | 50 mm/s | 50 mm/s | The preliminary outline around a print, when a skirt is generated. The 0.2 mm ABS and Gridfinity variants set skirt loops to zero. |
+
+These are requested toolpath speeds, not guarantees of the speed reached on
+every segment. Layer height, line width, filament volumetric limits, cooling
+slowdowns, acceleration, and firmware limits can reduce the actual speed.
+Changing from ABS to PLA changes the filament settings, including its flow
+limit, even though this process-speed table remains the same.
+
+The base also stores the following travel and conditional speed settings; all
+children, including PLA, retain these values:
+
+| Setting | Stored value | Meaning in these profiles |
+| --- | --- | --- |
+| Travel | 500 mm/s | Requested non-extruding XY movement, not a printing speed. Machine and Klipper limits still apply. |
+| First-layer travel | 100% | Uses the normal travel-speed setting rather than a separate first-layer reduction. |
+| Z travel | 0 | No separate positive Z-speed override; this is not a request to stop Z motion. |
+| Small perimeters | 50% | A relative small-perimeter speed is stored, but `small_perimeter_threshold=0` disables that threshold-based slowdown. |
+| Ironing | 30 mm/s | Speed for an optional smoothing pass over top surfaces; ironing is disabled in the bundled processes. |
+| Scarf joint | 100% | Uses the applicable wall speed for scarf seams. The base disables scarf seams; the 0.1 and 0.15 mm Functional ABS children enable them. |
+| Wipe | 80% | Relative wipe speed with role-based wipe speed enabled; wiping relieves nozzle pressure at the end of an extrusion path. |
+| Tower maximum purge flow | 90 mm³/s | A volumetric purge limit, not a linear model-printing speed. It is distinct from the filament's maximum volumetric speed and the tower's prime volume. |
+
+Acceleration is deliberately modest as well: the base requests **1000 mm/s²**
+for default, inner-wall, outer-wall, top-surface, and travel acceleration, and
+**500 mm/s²** for the first layer. Sparse and internal-solid infill use 100% of
+the default; bridges use 50%. These acceleration settings are shared by the
+PLA and ABS process presets. They govern how quickly the printer approaches
+a requested speed, rather than changing the speed values themselves.
+
+#### Process variants
+
+The nine child process presets are:
+
+- **0.2 mm Functional PLA:** a named child with no print-setting overrides.
+- **0.1, 0.15, and 0.2 mm Functional ABS:** layer-height/material-oriented
+  variants. The 0.2 mm variant sets 25% infill and explicitly repeats several
+  base speed values;
+  the thinner variants inherit directly from the common base, not from the
+  0.2 mm ABS variant.
+- **0.2 mm Gridfinity ABS:** three walls, three top layers, 15% triangular
+  infill, an outer brim, and explicit speed entries matching the base.
+- **0.1, 0.15, and 0.2 mm Functional IDEX ABS+HIPS Supports:** enable supports
+  and a prime tower, assigning support and support interfaces to filament
+  slot 2. They use a 15 mm tower width, 6 mm tower brim, and 15 mm³ prime
+  volume. Support interface spacing and top Z distance are zero, and independent
+  support layer height is disabled. The 0.2 mm variant selects automatic tree
+  supports; the thinner variants retain the base's normal automatic supports.
+- **0.2 mm Functional IDEX Multicolor:** enables a ribbed prime tower and
+  assigns support roles to slot 2, but does not itself enable supports. It
+  inherits the base's 20 mm tower width and 35 mm³ prime volume. Assign the
+  model's colors/materials in the project.
+
+Orca's filament slots here are **one-based**: slot 1 and slot 2 are not literal
+Klipper `T1` and `T2` commands. For the intended ABS+HIPS setup, assign ABS to
+the first/left tool (T0) and HIPS to the second/right tool (T1). The zero top
+support gap is paired with the soluble support material; it is not the usual
+breakaway-support gap for a single-nozzle Voron printing supports in the model
+material. The bottom support gap remains inherited at 0.2 mm.
+
+With separate nozzles, the prime tower re-establishes extrusion after a parked
+head resumes; it is not a same-nozzle material-change purge workflow. The IDEX
+children disable flushing into supports. Keep the tower and its brim inside
+the shared IDEX printable area, along with the model and supports.
+
+### Using the bundled presets
+
+Transfer the base and child presets together, then select the machine mode,
+filament(s), and process independently. The machine base defaults to
+`FFCP2+OK PLA` and `FFCP2+OK 0.2mm Functional`; selecting a machine does not
+automatically select the ABS+HIPS or multicolor workflow.
+
+Configure the printer connection for your installation. Hostnames, credentials,
+and cloud-sync identifiers have been cleared, but the exported base still
+contains `host_type=prusalink`; choose the connection type appropriate to your
+Klipper/Moonraker setup rather than treating that value as a configured endpoint.
+After slicing, inspect the selected start macro, initial tool, temperature
+commands, tool changes, and tower placement in the generated job. The examples
+above document the macro interface used by these profiles.
 
 ## Acknowledgements and References
 
@@ -249,4 +506,4 @@ examples above.
 [orca-wiki]: https://github.com/OrcaSlicer/OrcaSlicer/wiki
 [orca-placeholders]: https://github.com/OrcaSlicer/OrcaSlicer/wiki/built_in_placeholders_variables
 [klipper-dual-carriage]: https://www.klipper3d.org/Config_Reference.html#dual_carriage
-[orca-profiles]: https://github.com/lukescharf/orca-profiles
+[orca-profiles]: ../slicer/orca/
