@@ -1,4 +1,4 @@
-# 5. Klipper G-Code Style Guide
+# 9. Klipper G-Code Style Guide
 
 This style guide was created by and for the LLM-based linting tools that I'm
 using to refine the machine-specific Klipper G-Code for my FFCP2+OK printer

@@ -1,4 +1,4 @@
-# Slicer Setup for the FFCP2+OK IDEX 3D Printer
+# 3. Slicer Setup for the FFCP2+OK IDEX 3D Printer
 
 ## IDEX Printer
 

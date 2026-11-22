@@ -1,4 +1,4 @@
-Physical Conversion: Flashforge Creator Pro 2 -> FFCP2+OK
+2. Physical Conversion: Flashforge Creator Pro 2 -> FFCP2+OK
 =========================================================
 
 This is a **rough build draft**, not a pin-by-pin harness drawing. It describes the physical changes behind the configuration in [`../config/`](../config/) and the parts in the [BOM](1-BOM.md). This build keeps the Creator Pro 2's IDEX mechanics (two independent X carriages), Y gantry, Z bed, and much of its wiring, but replaces the stock controller with a BIGTREETECH Octopus Pro **v1.1, STM32H723**, running Klipper. T0 is the **left** head and T1 is the **right** head throughout this repository. Do not assume another FFCP2 or Octopus revision has the same connector order, voltage, or wire colors.

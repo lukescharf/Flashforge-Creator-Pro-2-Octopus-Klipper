@@ -2,6 +2,7 @@
 
 This document explains the goals and tradeoffs behind this conversion, rather
 than providing assembly instructions. The [BOM](1-BOM.md),
+[printed-parts guide](1a-BOM-Printed-Parts-Supplement.md),
 [physical-conversion draft](2-Physical_Conversion.md),
 [slicer setup](3-Slicer.md), and [calibration guide](4-Calibration.md)
 cover the implementation. The current source of truth for behavior is

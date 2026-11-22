@@ -3,6 +3,9 @@
 Parts list for converting the Flashforge Creator Pro 2 into the modernized
 Klipper-based FFCP2+OK.
 
+See [Printed Parts](1a-BOM-Printed-Parts-Supplement.md) for the complete CAD inventory,
+installation locations, photo placeholders, and printing considerations.
+
 ## Parts Required
 
 Printed parts are called out next to the purchased parts they support. Printable

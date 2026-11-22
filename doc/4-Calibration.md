@@ -1,4 +1,4 @@
-# Calibration Steps
+# 4. Calibration Steps
 
 This printer is used primarily for **Polymaker PolyLite ASA**. Calibrate with
 that filament and the temperatures, cooling, and chamber conditions you intend
