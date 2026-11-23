@@ -306,6 +306,12 @@ gantry-leveling and bed-mesh sequence. Single-tool and COPY/MIRROR startup call
 controlled-cooldown/end sequence described above. The machine pause G-code
 field is empty even though the firmware provides a `PAUSE` macro.
 
+The inherited end G-code remains `CONTROLLED_COOLDOWN S=45 R=1.3 MOVE=1`
+followed by `END_PRINT`. Both macros call the public `PRESENT_PRINT` positioning
+command internally when movement is enabled. Do not replace `END_PRINT` with
+`PRESENT_PRINT`: positioning alone does not shut down heaters or reset the
+tracked print mode. No additional presentation command is needed in the slicer.
+
 ### Filament presets: independent materials and temperatures
 
 The nine filament presets separate material behavior from machine mode:

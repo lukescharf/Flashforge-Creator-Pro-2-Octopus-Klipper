@@ -63,7 +63,7 @@ includes the hardware configuration and nine macro topic files, all in the same
 | --- | --- |
 | [`printer.cfg`](config/printer.cfg) | Explicit includes, acknowledgements, machine tunables, shared print-mode state, tool-offset macros, and saved calibration. |
 | [`Components.cfg`](config/Components.cfg) | Hardware definitions, motion limits, heaters, fans, lights, and filament sensors. |
-| [`Motion.cfg`](config/Motion.cfg) | Homing, parking, and shared positioning helpers. |
+| [`Motion.cfg`](config/Motion.cfg) | Homing, parking, `PRESENT_PRINT`, and shared positioning helpers. |
 | [`Toolheads.cfg`](config/Toolheads.cfg) | `T0`, `T1`, `TCOPY`, and `TMIRROR` tool/mode selection. |
 | [`Temperature.cfg`](config/Temperature.cfg) | Nozzle-temperature helper, `M140`, `M141`, `M191`, and `CONTROLLED_COOLDOWN`. |
 | [`Fans.cfg`](config/Fans.cfg) | Active-tool part cooling, `M106`, and `M107`. |
@@ -83,6 +83,20 @@ Voron configurations and community documentation while identifying local choices
 including macro-scoped comment blocks. I'm using LLM-based tools to deep-lint my
 Klipper G-Code and to ensure a consistent style, while applying conventional
 testing and review practices tailored for a homelab-style side-project.
+
+### Presenting a finished print
+
+Run `PRESENT_PRINT` from the Klipper console, or assign it to an OctoApp button,
+to park both heads and lower the bed for model removal. All axes must already
+be homed, XYZ positioning must be absolute (`G90`), and travel must be clear.
+It never homes automatically; do not home over a model on the bed. Use this
+action only when the printer is not printing or awaiting a paused-print resume.
+
+Unlike `PARK_ACTIVE`, it parks both heads and moves Z. Unlike `END_PRINT`, it
+does not turn off heaters or reset the tracked print mode. The public name makes
+the action discoverable, but does not automatically assign a special UI control.
+Update any external buttons or scripts that used the previous private job-done
+positioning command; no compatibility alias is provided.
 
 **Updating an existing installation:** Deploy all repository `.cfg` files in
 `config/` together, replacing the old `[include Macros.cfg]` with the direct
