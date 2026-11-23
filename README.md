@@ -92,6 +92,23 @@ values. Keep the locally supplied `mainsail.cfg` and any optional integrations;
 they are not provided by this repository. Macro names, slicer calls, and printer
 behavior are unchanged by this reorganization.
 
+## License
+
+Copyright (C) 2025–2026 Luke Scharf and respective contributors.
+
+This project's original configuration, macros, scripts, slicer profiles,
+documentation, and CAD designs are licensed under the **GNU General Public
+License, version 3 only** (`GPL-3.0-only`). You may redistribute and modify them
+under those terms; see [LICENSE](LICENSE) for the full license text.
+
+The project is provided **without warranty**, including any implied warranty of
+merchantability or fitness for a particular purpose. The license is not a safety
+certification; follow the build warnings and verify your own hardware.
+
+Third-party material retains its applicable copyright notices and license terms.
+This license does not relicense externally linked models, documentation, or other
+resources. Preserve upstream notices when redistributing adapted material.
+
 ## Major Change Log
 
 - **2026-11-17 — Topic-based configuration reorganization.** Split the former
