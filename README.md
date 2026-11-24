@@ -40,7 +40,7 @@ Guide 9 is a maintainer reference for writing and reviewing configuration change
 **Repository layout:**
 
 - [`config/`](config/) — Klipper configuration and macros. See the
-  [configuration layout](doc/0-Design_Decisions.md#configuration-layout) for topic files and organization.
+  [configuration layout](doc/0-Design_Decisions.md#6-klipper-configuration-organization) for topic files and organization.
 - [`cad/`](cad/) — CAD models and printable-part designs.
 - [`doc/`](doc/) — Design, BOM, printed parts, conversion, slicer, calibration, and G-Code style guides.
 - [`bin/`](bin/) — Host display-orientation scripts.
@@ -95,7 +95,7 @@ resources. Preserve upstream notices when redistributing adapted material.
   explicit includes and acknowledgements into `printer.cfg`. Applied Voron
   community-style formatting and macro descriptions to `printer.cfg`; retained
   machine settings, saved calibration, macro interfaces, and behavior. Updated
-  documentation links and added the [configuration layout](doc/0-Design_Decisions.md#configuration-layout)
+  documentation links and added the [configuration layout](doc/0-Design_Decisions.md#6-klipper-configuration-organization)
   and migration notes.
 - **2026-11-12 — Chamber temperature waits and heater duct.** Updated `M141`
   to wait for heating and conditionally for cooling, parking the active head

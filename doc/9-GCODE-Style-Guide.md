@@ -52,7 +52,7 @@ not, by themselves, permission to reformat unrelated files or change behavior.
 
 - Keep `config/printer.cfg` as the entry point with explicit includes. Keep
   hardware definitions in `Components.cfg` and macros in their existing topic
-  files. See the [configuration layout](0-Design_Decisions.md#configuration-layout).
+  files. See the [configuration layout](0-Design_Decisions.md#6-klipper-configuration-organization).
 - Preserve the repository's capitalized topic filenames. They distinguish
   repository-managed files from locally supplied integrations; this is not a
   universal Voron naming rule.

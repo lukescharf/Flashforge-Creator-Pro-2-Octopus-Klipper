@@ -22,7 +22,7 @@ The unfinished fan insert is intended to use the same stock display opening as
 the plain plug. Development has stalled while the focus remains on ASA printing;
 its fan and hardware selection are not yet documented in the BOM. The heater
 duct is present in CAD and described in [Design
-Decisions](0-Design_Decisions.md#5-active-chamber-heating-to-reduce-asaabs-warping).
+Decisions](0-Design_Decisions.md#4-chamber-heating-hardware).
 
 `.FCStd` files are editable FreeCAD documents. Recompute after changes and
 export the finished Body as an STL or another format supported by your slicer.

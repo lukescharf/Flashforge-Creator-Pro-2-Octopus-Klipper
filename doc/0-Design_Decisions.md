@@ -9,7 +9,7 @@ cover the implementation. The current source of truth for behavior is
 the topic files in [`config/`](../config/), loaded through
 [`config/printer.cfg`](../config/printer.cfg).
 
-## 0. Goal: Functional ASA/ABS Parts with Dissolvable Supports
+## 1. Goals and Priorities
 
 The goal was to build a good **ASA/ABS printer for functional parts**, including
 parts that need dissolvable supports. Dimensional accuracy, reliable extrusion,
@@ -28,7 +28,9 @@ Most of this printer's calibration and tuning has been done with **Polymaker
 PolyLite ASA**. Those settings are not universal ABS or support-material
 profiles, but they do provide a good starting point for other filament-types.
 
-## 1. Controller and Drivers: Octopus Pro v1.1 + TMC2209
+## 2. Controller and Hotend Hardware
+
+### 2.1 Octopus Pro v1.1 and TMC2209 Drivers
 
 I selected the **BIGTREETECH Octopus Pro v1.1 with an STM32H723** as the
 mainboard for this printer, with **TMC2209 stepper-driver modules**. The
@@ -60,7 +62,90 @@ Several other Klipper-compatible boards could work in this application. If
 you choose one of those, you'll need to revise the pin assignments and
 work out the physical mounting yourself.
 
-## 2. Five Print Modes, Selected at Job Start
+### 2.2 Replacement Heater Blocks and Thermistors
+
+The stock hotend sensors are **thermocouples**. This build instead uses
+thermistors on the Octopus's ordinary thermistor inputs, with both
+hotend-sensors configured as `Generic 3950` (generic Ender3-style thermisters).
+A thermocouple is not a drop-in electrical replacement for a thermistor on those
+inputs, and thermisters are not expensive.
+
+The two heater blocks were replaced with **Micro Swiss plated-copper,
+high-temperature MK10 blocks with M7 threads** so the selected replacement
+thermistors could be fitted and retained appropriately while retaining physical
+compatibilty with the FFCPK's extruder and nozzles. For this parts selection,
+the block change was a compatibility necessity, not simply a cosmetic hotend
+upgrade. It also avoids improvising an insecure sensor mounting in a hot block.
+
+Swapping in standard thermistors and matching blocks was the most straightforward
+and cost-effective way to make this work using off-the-shelf parts. The heated
+bed retains the sensor that Flashforge installed, since it is compatible with
+the Octopus Pro v1.1.
+
+Sensor type, retention, electrical isolation, and heater/sensor pairing must be
+verified before heating. Replacing blocks and sensors also requires fresh PID
+tuning and nozzle-height/Z calibration. Use thermal paste only where specified
+by the component manufacturer. The configured 275°C hotend limit is my estimate,
+not a verified safe hardware rating. I've experienced frequent clogging at
+temperatures above 250°C with the Flashforge extruder.
+
+## 3. Slicer Workflow, Tool Numbering, and Print Modes
+
+### 3.1 OrcaSlicer as the Primary Slicer
+
+I chose to focus on **OrcaSlicer** primarily because it already works well with
+both my **Prusa MK3** and my **Sovol SV08**. That made it a good bet for running
+three types of 3D printers.
+
+OrcaSlicer also fits the way this project is organized: separate printer
+profiles represent the five print modes, filament profiles hold material-specific
+temperature and shrinkage settings, and custom Machine start G-code passes
+parameters to the Klipper startup macros. Most configuration and testing has
+been done with OrcaSlicer, so the bundled profiles and the examples in
+[Slicer Setup](3-Slicer.md#slicer-choice) reflect its actual G-Code output.
+
+Other slicers should work, but they are not equally tested on this conversion.
+In particular, SuperSlicer and PrusaSlicer do not yet have tested profiles here.
+Their generated G-Code may differ in temperature-command ordering, startup
+parameters, or tool selection, so the slicer custom G-Code and/or Klipper macros
+may need adjustments for their quirks. Supporting FlashPrint's native output has
+not been a goal; its G-Code is quirky, and the point of this conversion is to
+move an old FlashForge printer into the more-modern Klipper/Voron ecosystem to
+the degree possible, while maintaining the benefits of an IDEX printer.
+Choosing one slicer to test with makes the project easier, and I welcome patches
+from anyone who wants to test another slicer.
+
+### 3.2 Left = T0; Right = T1
+
+I arbitrarily chose the tool numbering, and I did not follow FlashForge's
+convention. When I had the machine torn apart with FlashForge's
+mainboard/firmware/screen removed, I realized I could set this machine up in the
+way I think is intuitive. I chose **left = T0** and **right = T1** because
+left-to-right numbering felt the most intuitive to me.
+
+This convention is carried consistently throughout every level of the
+conversion:
+
+- T0 is Klipper's `extruder` and primary X carriage, `stepper_x`.
+- T1 is `extruder1` and `dual_carriage`.
+- The generic `START_PRINT` defaults to the left head.
+- COPY and MIRROR use T0 as the motion/extrusion leader.
+- T1's calibrated nozzle offsets in Klipper are relative to the T0 reference.
+
+**This differs from the stock workflow's default primary head, and also from the
+other conversion guides that I referenced.** The [Flashforge Creator Pro 2 User
+Guide][ffcp2-manual], section 3.3, printed page 45 (PDF page 47), states that
+the left extruder is used for support material by default, while the right
+extruder prints the model. It also says that a monochrome model uses the right
+extruder automatically unless the user changes the selection. That passage
+establishes the stock default roles, not literal `T0` / `T1` G-code numbering;
+the numbering above is this conversion's explicit mapping. Neither head is
+permanently restricted to model or support material.
+
+In software terms, this is a one-off Klipper-based IDEX printer, so applying
+profiles from other FFCP2 variations needs to be done with care.
+
+### 3.3 Five Print Modes, Selected at Job Start
 
 I chose to implement the different print modes as five separate logical printers
 in OrcaSlicer. Each profile selects a mode through its **Machine start G-code**
@@ -92,70 +177,7 @@ synchronized relationships; in these modes the T0 printhead drives the toolpath 
 See [Slicer Setup](3-Slicer.md) for the actual start-code expressions, origins,
 printable volumes, and MIRROR clearance calculation.
 
-The startup macros wait for their specified nozzle and bed temperatures, but
-**do not automatically set or wait for chamber temperature**. Chamber preheating
-must be requested separately through the chamber commands described below.  I
-chose this approach based on the quirks of the G-Code that Orca Slicer actually
-generates, and some details may need to be adjusted in the Klipper-side G-Code macros to accommodate other slicers.
-
-## 3. Left Head as the Primary Tool, T0
-
-I arbitrarily chose the tool numbering, and I did not follow FlashForge's
-convention.  When I had the machine torn apart with FlashForge's
-mainboard/firmware/screen removed, I realzied I could this machine up in the way
-I think is intuitive.  I chose **left = T0** and **right = T1** because
-left-to-right numbering felt the most intuitive to me.
-
-This convention is carried consistently throughout every level of the
-conversion:
-
-- T0 is Klipper's `extruder` and primary X carriage, `stepper_x`.
-- T1 is `extruder1` and `dual_carriage`.
-- The generic `START_PRINT` defaults to the left head.
-- COPY and MIRROR use T0 as the motion/extrusion leader.
-- T1's calibrated nozzle offsets in Klipper are relative to the T0 reference.
-
-**This differs from the stock workflow's default primary head, and also from the
-other conversion guides that I referenced.** The [Flashforge Creator Pro 2 User
-Guide][ffcp2-manual], section 3.3, printed page 45 (PDF page 47), states that
-the left extruder is used for support material by default, while the right
-extruder prints the model. It also says that a monochrome model uses the right
-extruder automatically unless the user changes the selection. That passage
-establishes the stock default roles, not literal `T0` / `T1` G-code numbering;
-the numbering above is this conversion's explicit mapping. Neither head is
-permanently restricted to model or support material.
-
-In software terms, this is a one-off Klipper-based IDEX printer, so applying
-profiles from other FFCP2 variations needs to be done with care.
-
-## 4. Heater Blocks and Octopus-Compatible Thermistors
-
-The stock hotend sensors are **thermocouples**. This build instead uses
-thermistors on the Octopus's ordinary thermistor inputs, with both
-hotend-sensors configured as `Generic 3950` (generic Ender3-style thermisters).
-A thermocouple is not a drop-in electrical replacement for a thermistor on those
-inputs, and thermisters are not expensive.
-
-The two heater blocks were replaced with **Micro Swiss plated-copper,
-high-temperature MK10 blocks with M7 threads** so the selected replacement
-thermistors could be fitted and retained appropriately while retaining physical
-compatibilty with the FFCPK's extruder and nozzles. For this parts selection,
-the block change was a compatibility necessity, not simply a cosmetic hotend
-upgrade. It also avoids improvising an insecure sensor mounting in a hot block.
-
-Swapping in standard thermistors and matching blocks was the most straightforward
-and cost-effective way to make this work using off-the-shelf parts. The heated
-bed retains the sensor that Flashforge installed, since it is compatible with
-the Octopus Pro v1.1.
-
-Sensor type, retention, electrical isolation, and heater/sensor pairing must be
-verified before heating. Replacing blocks and sensors also requires fresh PID
-tuning and nozzle-height/Z calibration. Use thermal paste only where specified
-by the component manufacturer. The configured 275°C hotend limit is my estimate,
-not a verified safe hardware rating. I've experienced frequent clogging at
-temperatures above 250°C with the Flashforge extruder.
-
-## 5. Active Chamber Heating to Reduce ASA/ABS Warping
+## 4. Chamber Heating Hardware
 
 The stock FFCP2 enclosure reduces drafts and keeps the print warmer than it
 would otherwise be, but I still experienced frequent warping with the enclosure
@@ -186,7 +208,9 @@ print reliably without constant clogs is about 60°C. The thermal limits of the
 wiring, fans, electronics, mounts, and other components exposed to the chamber
 also matter. More chamber heat is not automatically better.
 
-## 6. Blocking Temperature Changes for Print Quality
+## 5. Temperature Management for Print Quality
+
+### 5.1 Blocking Layer-to-Layer Temperature Changes
 
 I implemented blocking bed-temperature and chamber-temperature changes to reduce
 warping, elephant's foot, and other distortions. The build plates I've tested
@@ -202,12 +226,9 @@ the effect. When I modified the bed-temperature macro (`M140`) block until the
 bed cooled to the operating temperature I requested, I found that my print had
 both good bed adhesion and low deformation!
 
-In addition to blocking while the temperatures change, I discovered that M140
-needed to park the toolhead during the operation to keep a stationary hot-end
-from melting the model and depositing ooze on the print during the minutes it
-takes to equalize the temperature. Since this is an IDEX printer, parking hot
-printheads and managing ooze are design requirements when running in
-tool-swapping mode, so I was able to leverage those capabilities here. In other words, the usual usual nonblocking semantics for `M140` and `M141` just doesn't work very well.
+The usual nonblocking semantics for `M140` and `M141` do not work well for this
+layer-to-layer temperature transition, so these overrides deliberately wait
+under the conditions described below.
 
 Here's a breakdown of the cooling/heating behavior, since there are a number of exceptions:
 
@@ -217,6 +238,15 @@ Here's a breakdown of the cooling/heating behavior, since there are a number of 
 | `M141 S…` | Sets the chamber target and, outside ±3°C, waits for heating. For cooling, waits only for targets at least 30°C and no more than 10°C above the measured bed temperature. `S0` turns the heater off without waiting. |
 | `M191 S…` | Explicit blocking chamber-temperature command; for a positive target, waits within ±7%. It can temporarily use an otherwise-off bed to assist chamber heating. `S0` turns the chamber heater off. |
 
+### 5.2 Parking and Restoring the Toolheads During Waits
+
+In addition to blocking while the temperatures change, I discovered that M140
+needed to park the toolhead during the operation to keep a stationary hot-end
+from melting the model and depositing ooze on the print during the minutes it
+takes to equalize the temperature. Since this is an IDEX printer, parking hot
+printheads and managing ooze are design requirements when running in
+tool-swapping mode, so I was able to leverage those capabilities here.
+
 When `M140` or `M141` requires a temperature wait, it saves G-code and
 dual-carriage state, parks the active head, waits, then restores the carriage
 relationship and print position. This matters for COPY/MIRROR as well as
@@ -225,12 +255,23 @@ invoked and avoid selected waits for targets that may be impractical under the
 current thermal conditions; they do not guarantee every cooling request will
 finish quickly.
 
+### 5.3 Startup Heating and Chamber Coordination
+
+The startup macros wait for their specified nozzle and bed temperatures, but
+**do not automatically set or wait for chamber temperature**. Chamber preheating
+must be requested separately through the chamber commands described above. I
+chose this approach based on the quirks of the G-Code that OrcaSlicer actually
+generates, and some details may need to be adjusted in the Klipper-side G-Code
+macros to accommodate other slicers.
+
 The `START_PRINT_*` macros use direct heater commands to begin nozzle and bed
 heating in parallel, followed by explicit temperature waits. Separately, `M191`
 can use an otherwise-off heated bed to assist the chamber heater during chamber
 preheating. Calling `SET_HEATER_TEMPERATURE` directly elsewhere also bypasses
 the `M140` / `M141` parking-and-wait policy. Slicer start code and temperature
 transitions must be reviewed with these semantics in mind.
+
+### 5.4 Controlled Post-Print Cooling
 
 `CONTROLLED_COOLDOWN S=<target> R=<degrees_per_minute>` complements this policy
 with a gradual bed-target ramp, maintaining the chamber target until the ramp
@@ -247,20 +288,7 @@ This printer is optimized for making functional parts and has not been optimized
 for speed. This printer spends a fair amount of print-job time on thermal
 management, but I get high-quality prints out of it -- so I'll take it.
 
-## 7. Future Direction: Orbiter V3.5 Printheads
-
-I am seeing both mechanical and thermal limitations in the Flashforge extruder
-gripper/feed arrangement and hotend. Replacing the controller and controlling
-chamber temperature improve the platform, but did not remove those toolhead
-limits.  I expect higher speeds, higher temperatures, and improved quality with
-Orbiter V3.5 printheads, but I'll have to try it to see.
-
-My next FFCP2 conversion will likely **fork this project and replace the
-printheads with Orbiter V3.5 printheads and Revo nozzles**. I hope this will reduce
-slack in the filament path, improve filament-motion detection, and enable higher
-printing speeds and chamber temperatures.
-
-## Configuration Layout
+## 6. Klipper Configuration Organization
 
 [`config/printer.cfg`](../config/printer.cfg) is the entry point. It directly
 includes the hardware configuration and nine macro topic files, all in the same
@@ -291,6 +319,19 @@ Voron configurations and community documentation while identifying local choices
 including macro-scoped comment blocks. I'm using LLM-based tools to deep-lint my
 Klipper G-Code and to ensure a consistent style, while applying conventional
 testing and review practices tailored for a homelab-style side-project.
+
+## 7. Future Direction: Orbiter V3.5 Printheads
+
+I am seeing both mechanical and thermal limitations in the Flashforge extruder
+gripper/feed arrangement and hotend. Replacing the controller and controlling
+chamber temperature improve the platform, but did not remove those toolhead
+limits.  I expect higher speeds, higher temperatures, and improved quality with
+Orbiter V3.5 printheads, but I'll have to try it to see.
+
+My next FFCP2 conversion will likely **fork this project and replace the
+printheads with Orbiter V3.5 printheads and Revo nozzles**. I hope this will reduce
+slack in the filament path, improve filament-motion detection, and enable higher
+printing speeds and chamber temperatures.
 
 ## References
 
