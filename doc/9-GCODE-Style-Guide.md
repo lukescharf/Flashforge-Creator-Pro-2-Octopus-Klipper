@@ -39,7 +39,7 @@ not, by themselves, permission to reformat unrelated files or change behavior.
 | Item | Convention | Basis |
 | --- | --- | --- |
 | Public macros and commands | `CONTROLLED_COOLDOWN`, `SET_HEATER_TEMPERATURE` | Voron practice |
-| Internal helpers | Leading underscore: `_MOTORS_ACTIVE_BARRIER` | Voron practice; not access control |
+| Internal helpers | Leading underscore: `_CG28` | Voron practice; not access control |
 | Command parameter names | Uppercase: `HEATER=heater_bed`, `params.TARGET` | Voron practice; Klipper exposes parameter names uppercase |
 | Configuration keys | Lowercase with `: `, such as `description: ...` | Voron practice; separator choice is local |
 | Jinja local variables | Lowercase snake_case: `cooling_per_second` | Voron practice |
