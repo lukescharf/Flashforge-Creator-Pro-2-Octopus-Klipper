@@ -40,7 +40,7 @@ Guide 9 is a maintainer reference for writing and reviewing configuration change
 **Repository layout:**
 
 - [`config/`](config/) — Klipper configuration and macros. See the
-  [configuration layout](#configuration-layout) for topic files and migration notes.
+  [configuration layout](doc/0-Design_Decisions.md#configuration-layout) for topic files and organization.
 - [`cad/`](cad/) — CAD models and printable-part designs.
 - [`doc/`](doc/) — Design, BOM, printed parts, conversion, slicer, calibration, and G-Code style guides.
 - [`bin/`](bin/) — Host display-orientation scripts.
@@ -51,60 +51,6 @@ Guide 9 is a maintainer reference for writing and reviewing configuration change
 > techniques. Verify wiring and machine-specific calibration; do not copy saved
 > PID or Z-endstop values blindly. The 120 V AC chamber heater means you need to
 > be comfortable working with mains voltages as part of this project.
-
-## Configuration Layout
-
-[`config/printer.cfg`](config/printer.cfg) is the entry point. It directly
-includes the hardware configuration and nine macro topic files, all in the same
-`config/` directory. The former `Macros.cfg` has been removed; there is no
-`config/macros/` subdirectory.
-
-| File | Contents |
-| --- | --- |
-| [`printer.cfg`](config/printer.cfg) | Explicit includes, acknowledgements, machine tunables, shared print-mode state, tool-offset macros, and saved calibration. |
-| [`Components.cfg`](config/Components.cfg) | Hardware definitions, motion limits, heaters, fans, lights, and filament sensors. |
-| [`Motion.cfg`](config/Motion.cfg) | Homing, parking, `PRESENT_PRINT`, and shared positioning helpers. |
-| [`Toolheads.cfg`](config/Toolheads.cfg) | `T0`, `T1`, `TCOPY`, and `TMIRROR` tool/mode selection. |
-| [`Temperature.cfg`](config/Temperature.cfg) | Nozzle-temperature helper, `M140`, `M141`, `M191`, and `CONTROLLED_COOLDOWN`. |
-| [`Fans.cfg`](config/Fans.cfg) | Active-tool part cooling, `M106`, and `M107`. |
-| [`Lighting.cfg`](config/Lighting.cfg) | Startup lighting and the continuous chamber LED status template. |
-| [`Filament.cfg`](config/Filament.cfg) | Filament loading/unloading, nozzle cleaning, and priming. |
-| [`Calibration.cfg`](config/Calibration.cfg) | The `Z_ENDSTOP_CALIBRATE` override. |
-| [`Print_Start.cfg`](config/Print_Start.cfg) | All `START_PRINT*` entry points and their shared startup helper. |
-| [`Print_Control.cfg`](config/Print_Control.cfg) | Pause, resume, idle timeout, print completion, and cancellation. |
-
-Capitalized hardware/topic filenames distinguish repository-managed files from
-local integration files in `printer_data/config`.  I symlink from
-`printer_data/config` into my repo to keep everything consistent. Includes are
-explicit rather than wildcard-based, so unrelated `.cfg` files are not loaded
-automatically. I'm gradually migrating these files toward the
-[Klipper G-Code style guide](doc/9-GCODE-Style-Guide.md), which draws on published
-Voron configurations and community documentation while identifying local choices,
-including macro-scoped comment blocks. I'm using LLM-based tools to deep-lint my
-Klipper G-Code and to ensure a consistent style, while applying conventional
-testing and review practices tailored for a homelab-style side-project.
-
-### Presenting a finished print
-
-Run `PRESENT_PRINT` from the Klipper console, or assign it to an OctoApp button,
-to park both heads and lower the bed for model removal. All axes must already
-be homed, XYZ positioning must be absolute (`G90`), and travel must be clear.
-It never homes automatically; do not home over a model on the bed. Use this
-action only when the printer is not printing or awaiting a paused-print resume.
-
-Unlike `PARK_ACTIVE`, it parks both heads and moves Z. Unlike `END_PRINT`, it
-does not turn off heaters or reset the tracked print mode. The public name makes
-the action discoverable, but does not automatically assign a special UI control.
-Update any external buttons or scripts that used the previous private job-done
-positioning command; no compatibility alias is provided.
-
-**Updating an existing installation:** Deploy all repository `.cfg` files in
-`config/` together, replacing the old `[include Macros.cfg]` with the direct
-includes shown in `printer.cfg`. Preserve your machine-specific tunables and
-`SAVE_CONFIG` calibration block rather than overwriting them with this build's
-values. Keep the locally supplied `mainsail.cfg` and any optional integrations;
-they are not provided by this repository. Macro names, slicer calls, and printer
-behavior are unchanged by this reorganization.
 
 ## License
 
@@ -125,13 +71,32 @@ resources. Preserve upstream notices when redistributing adapted material.
 
 ## Major Change Log
 
+- **2026-11-22–23 — Community macro naming.** Renamed the private job-done
+  positioning helper to `PRESENT_PRINT` for console and OctoApp use, and the
+  conditional-homing helper to `_CG28`. Updated callers and documentation,
+  including behavior and safety notes. No motion behavior changed.
+- **2026-11-22 — Bundled OrcaSlicer profiles.** Added sanitized machine,
+  filament, and process presets under [`slicer/orca/`](slicer/orca/), including
+  all five print modes, inherited base profiles, and ABS/HIPS support
+  configurations. Aligned startup parameters with Klipper macros and constrained
+  MIRROR toolpaths to X = 79.5 mm. Expanded the slicer guide with preset behavior
+  and printing-speed documentation.
+- **2026-11-22 — Configuration style and documentation.** Added a Voron-informed
+  Klipper G-Code style guide and applied it to all sections of G-Code,
+  standardizing formatting, descriptions, and behavior/safety comments throughout
+  the configuration. Added a printed-parts BOM supplement.
+- **2026-11-22 — Project licensing.** Licensed original project configuration,
+  scripts, profiles, documentation, and CAD designs under GPL-3.0-only,
+  preserving third-party notices and terms.
+- **2026-11-18 — Chamber-heater duct revision.** Added the second iteration of
+  the 400 W PTC chamber-heater duct CAD design.
 - **2026-11-17 — Topic-based configuration reorganization.** Split the former
   `Macros.cfg` into nine topic files directly under `config/` and moved their
   explicit includes and acknowledgements into `printer.cfg`. Applied Voron
   community-style formatting and macro descriptions to `printer.cfg`; retained
   machine settings, saved calibration, macro interfaces, and behavior. Updated
-  documentation links and added the [configuration layout and migration
-  notes](#configuration-layout).
+  documentation links and added the [configuration layout](doc/0-Design_Decisions.md#configuration-layout)
+  and migration notes.
 - **2026-11-12 — Chamber temperature waits and heater duct.** Updated `M141`
   to wait for heating and conditionally for cooling, parking the active head
   and restoring G-code and dual-carriage state afterward. Cooling waits are

@@ -32,7 +32,7 @@ profiles, but they do provide a good starting point for other filament-types.
 
 I selected the **BIGTREETECH Octopus Pro v1.1 with an STM32H723** as the
 mainboard for this printer, with **TMC2209 stepper-driver modules**. The
-TMC2209s were selected due to a combination of reasonable cost and precise/quit
+TMC2209s were selected due to a combination of reasonable cost and precise/quiet
 operation; the stock motors are not pushing their limits in this printer and
 don't need to be upgraded.
 
@@ -50,10 +50,11 @@ retained; using these drivers does not imply sensorless homing. Driver current
 and cooling still need to suit the actual motors and enclosure conditions.
 
 The board revision matters: BTT's documents show that the heater, the
-motor-enable, and the RGB pin assignments were all changed between v1.0 and
-v1.1. Use the [manufacturer's v1.1 references][octopus-pro], not an untranslated
-v1.0 pin map.  Since v1.0 and v1.1 board documentation are shared in the same
-repo, it's easy to pick the wrong one.
+motor-enable, and the RGB pin assignments were all changed between the Octopus
+Pro v1.0 and Octopus Pro v1.1. Be on the lookout for this issue, and use the
+[manufacturer's v1.1 references][octopus-pro], not an untranslated v1.0 pin map.
+Since v1.0 and v1.1 board documentation are shared in the same repo, it's easy
+to pick the wrong one.
 
 Several other Klipper-compatible boards could work in this application. If
 you choose one of those, you'll need to revise the pin assignments and
@@ -258,6 +259,38 @@ My next FFCP2 conversion will likely **fork this project and replace the
 printheads with Orbiter V3.5 printheads and Revo nozzles**. I hope this will reduce
 slack in the filament path, improve filament-motion detection, and enable higher
 printing speeds and chamber temperatures.
+
+## Configuration Layout
+
+[`config/printer.cfg`](../config/printer.cfg) is the entry point. It directly
+includes the hardware configuration and nine macro topic files, all in the same
+`config/` directory. The former `Macros.cfg` has been removed; there is no
+`config/macros/` subdirectory.
+
+| File | Contents |
+| --- | --- |
+| [`printer.cfg`](../config/printer.cfg) | Explicit includes, acknowledgements, machine tunables, shared print-mode state, tool-offset macros, and saved calibration. |
+| [`Components.cfg`](../config/Components.cfg) | Hardware definitions, motion limits, heaters, fans, lights, and filament sensors. |
+| [`Motion.cfg`](../config/Motion.cfg) | Homing, parking, `PRESENT_PRINT`, and shared positioning helpers. |
+| [`Toolheads.cfg`](../config/Toolheads.cfg) | `T0`, `T1`, `TCOPY`, and `TMIRROR` tool/mode selection. |
+| [`Temperature.cfg`](../config/Temperature.cfg) | Nozzle-temperature helper, `M140`, `M141`, `M191`, and `CONTROLLED_COOLDOWN`. |
+| [`Fans.cfg`](../config/Fans.cfg) | Active-tool part cooling, `M106`, and `M107`. |
+| [`Lighting.cfg`](../config/Lighting.cfg) | Startup lighting and the continuous chamber LED status template. |
+| [`Filament.cfg`](../config/Filament.cfg) | Filament loading/unloading, nozzle cleaning, and priming. |
+| [`Calibration.cfg`](../config/Calibration.cfg) | The `Z_ENDSTOP_CALIBRATE` override. |
+| [`Print_Start.cfg`](../config/Print_Start.cfg) | All `START_PRINT*` entry points and their shared startup helper. |
+| [`Print_Control.cfg`](../config/Print_Control.cfg) | Pause, resume, idle timeout, print completion, and cancellation. |
+
+Capitalized hardware/topic filenames distinguish repository-managed files from
+local integration files in `printer_data/config`.  I symlink from
+`printer_data/config` into my repo to keep everything consistent. Includes are
+explicit rather than wildcard-based, so unrelated `.cfg` files are not loaded
+automatically. I'm gradually migrating these files toward the
+[Klipper G-Code style guide](9-GCODE-Style-Guide.md), which draws on published
+Voron configurations and community documentation while identifying local choices,
+including macro-scoped comment blocks. I'm using LLM-based tools to deep-lint my
+Klipper G-Code and to ensure a consistent style, while applying conventional
+testing and review practices tailored for a homelab-style side-project.
 
 ## References
 
