@@ -1,4 +1,4 @@
-# 9. Klipper G-Code Style Guide
+# 90. Klipper G-Code Style Guide
 
 This style guide was created by and for the LLM-based linting tools that I'm
 using to refine the machine-specific Klipper G-Code for my FFCP2+OK printer
@@ -52,7 +52,7 @@ not, by themselves, permission to reformat unrelated files or change behavior.
 
 - Keep `config/printer.cfg` as the entry point with explicit includes. Keep
   hardware definitions in `Components.cfg` and macros in their existing topic
-  files. See the [configuration layout](0-Design_Decisions.md#6-klipper-configuration-organization).
+  files. See the [configuration layout](01-Design-Decisions.md#6-klipper-configuration-organization).
 - Preserve the repository's capitalized topic filenames. They distinguish
   repository-managed files from locally supplied integrations; this is not a
   universal Voron naming rule.

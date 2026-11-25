@@ -1,9 +1,9 @@
-# BOM for Flashforge Creator Pro 2 → FFCP2+OK Conversion
+# 2. BOM for Flashforge Creator Pro 2 → FFCP2+OK Conversion
 
 Parts list for converting the Flashforge Creator Pro 2 into the modernized
 Klipper-based FFCP2+OK.
 
-See [Printed Parts](1a-BOM-Printed-Parts-Supplement.md) for the complete CAD inventory,
+See [Printed Parts](03-Printed-Parts.md) for the complete CAD inventory,
 installation locations, photo placeholders, and printing considerations.
 
 ## Parts Required
@@ -113,7 +113,7 @@ Replacing them with a NeoPixel device is just easier.
 - M3 Screws, socket head cap assortment with nuts and washers.
 - M3 Shim Washers, 6 mm OD, assorted thicknesses including 0.2 mm (qty: as
   needed). For physically matching nozzle heights during
-  [IDEX Z-Offset Calibration](4-Calibration.md#idex-z-offset-calibration);
+  [IDEX Z-Offset Calibration](06-Calibration.md#idex-z-offset-calibration);
   ordinary washers are not a substitute for precision shims.
 - Zip Ties, assorted.
 

@@ -1,8 +1,9 @@
-# 1a. Printed Parts — BOM Supplement
+# 3. Printed Parts
 
-This guide covers the printed parts in [`cad/`](../cad/) and the [Bill of
-Materials](1-BOM.md). The lighting and camera entries share a single bracket.
-See [Physical Conversion](2-Physical_Conversion.md) for assembly and wiring.
+This guide supplements the [Bill of Materials](02-BOM.md) with details of the
+printed parts in [`cad/`](../cad/). The lighting and camera entries share a
+single bracket. See [Physical Conversion](04-Physical-Conversion.md) for
+assembly and wiring.
 
 ## Print Inventory and File Formats
 
@@ -22,7 +23,7 @@ The unfinished fan insert is intended to use the same stock display opening as
 the plain plug. Development has stalled while the focus remains on ASA printing;
 its fan and hardware selection are not yet documented in the BOM. The heater
 duct is present in CAD and described in [Design
-Decisions](0-Design_Decisions.md#4-chamber-heating-hardware).
+Decisions](01-Design-Decisions.md#4-chamber-heating-hardware).
 
 `.FCStd` files are editable FreeCAD documents. Recompute after changes and
 export the finished Body as an STL or another format supported by your slicer.
@@ -233,7 +234,7 @@ ASA recommendation nor the configured 65°C chamber limit establishes a suitable
 material rating for this duct. Do not use the temporary-PLA recommendation here;
 the actual material and local temperature suitability remain to be documented.
 See the [chamber-heater installation
-notes](2-Physical_Conversion.md#120-v-ac-chamber-heater-wiring).
+notes](04-Physical-Conversion.md#120-v-ac-chamber-heater-wiring).
 
 ## Chamber Thermistor Mount
 

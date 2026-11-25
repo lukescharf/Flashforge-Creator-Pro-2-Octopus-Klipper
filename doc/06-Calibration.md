@@ -1,4 +1,4 @@
-# 4. Calibration Steps
+# 6. Calibration Steps
 
 This printer is used primarily for **Polymaker PolyLite ASA**. Calibrate with
 that filament and the temperatures, cooling, and chamber conditions you intend
@@ -18,7 +18,7 @@ materials need their own filament profiles and calibration.
    operating temperature, within component ratings and the configured 65°C limit.
    Only run this after the chamber wiring, sensor and independent overtemperature
    protection have been verified; see the
-   [chamber-heater safety notes](2-Physical_Conversion.md#120-v-ac-chamber-heater-wiring).
+   [chamber-heater safety notes](04-Physical-Conversion.md#120-v-ac-chamber-heater-wiring).
 5. Bed leveling using bed-screws. The FFCP2 bed is very flat, but extreme
    precision here pays off when performing the IDEX Z-Offset Calibration below.
 6. Standard Klipper Z-offset calibration (perform after bed leveling and IDEX

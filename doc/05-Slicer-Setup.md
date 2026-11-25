@@ -1,4 +1,4 @@
-# 3. Slicer Setup for the FFCP2+OK IDEX 3D Printer
+# 5. Slicer Setup for the FFCP2+OK IDEX 3D Printer
 
 ## IDEX Printer
 
@@ -33,7 +33,7 @@ this guide are built around its behavior.
 This printer is used primarily with **Polymaker PolyLite ASA**. Keep its tuned
 temperature, cooling, and shrinkage settings in an ASA filament profile rather
 than treating them as universal settings for other materials. Use the
-[filament shrinkage profiling procedure](4-Calibration.md#filament-shrinkage-profiling)
+[filament shrinkage profiling procedure](06-Calibration.md#filament-shrinkage-profiling)
 to measure and compensate for dimensional changes in your filament.
 
 Other slicers have the following caveats:
@@ -83,7 +83,7 @@ The MIRROR width is derived from the current macros and configured carriage
 separation as explained below. Verify them against your
 calibrated machine before printing, including clearance for skirts, brims,
 supports, and any purge structures. The axis travel limits in
-[Physical Conversion](2-Physical_Conversion.md) are not interchangeable with
+[Physical Conversion](04-Physical-Conversion.md) are not interchangeable with
 these printable dimensions.
 
 ## Five Print Modes
@@ -351,7 +351,7 @@ pressure advance, chamber heat, or an exhaust filter.
 The generic temperatures and flow limits are starting values, not evidence of
 calibration for a particular spool or hotend. The customized ABS/HIPS shrinkage
 values are also build/material-specific; use the
-[calibration guide](4-Calibration.md#filament-shrinkage-profiling) when adapting
+[calibration guide](06-Calibration.md#filament-shrinkage-profiling) when adapting
 them.
 
 ### Process presets: structural parts and two-nozzle supports

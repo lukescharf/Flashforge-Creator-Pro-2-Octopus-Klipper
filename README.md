@@ -23,24 +23,23 @@ stock FlashPrint workflow to Klipper macros and OrcaSlicer.
 
 ## Documentation
 
-Read the guides in order:
+Read guides 1–6 in order. Guide 90 is a maintainer reference for writing and
+reviewing configuration changes.
 
 | Guide                                                | What it covers                                                                       |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [0. Design Decisions](doc/0-Design_Decisions.md)        | Goals, hardware choices, print modes, thermal-control tradeoffs, and future directions. |
-| [1. Bill of Materials](doc/1-BOM.md)                   | Purchased parts, printed adapters, and workshop supplies.                             |
-| [1a. Printed Parts — BOM Supplement](doc/1a-BOM-Printed-Parts-Supplement.md) | Part purposes, installation locations, photo placeholders, and printing considerations. |
-| [2. Physical Conversion](doc/2-Physical_Conversion.md) | Controller installation, wiring references, safety, and staged first-power-on checks. |
-| [3. Slicer Setup](doc/3-Slicer.md)                     | OrcaSlicer, the five print modes, printable areas, and start G-code.                   |
-| [4. Calibration](doc/4-Calibration.md)                 | Heater PID, bed leveling, nozzle alignment, XY offsets, filament shrinkage, and skew.  |
-| [9. Klipper G-Code Style Guide](doc/9-GCODE-Style-Guide.md) | Voron-informed formatting, macro-scoped documentation, state handling, and review standards. |
-
-Guide 9 is a maintainer reference for writing and reviewing configuration changes.
+| [1. Design Decisions](doc/01-Design-Decisions.md) | Goals, hardware choices, print modes, thermal-control tradeoffs, and future directions. |
+| [2. Bill of Materials](doc/02-BOM.md) | Purchased parts, printed adapters, and workshop supplies. |
+| [3. Printed Parts](doc/03-Printed-Parts.md) | Part purposes, installation locations, photo placeholders, and printing considerations. |
+| [4. Physical Conversion](doc/04-Physical-Conversion.md) | Controller installation, wiring references, safety, and staged first-power-on checks. |
+| [5. Slicer Setup](doc/05-Slicer-Setup.md) | OrcaSlicer, the five print modes, printable areas, and start G-code. |
+| [6. Calibration](doc/06-Calibration.md) | Heater PID, bed leveling, nozzle alignment, XY offsets, filament shrinkage, and skew. |
+| [90. Klipper G-Code Style Guide](doc/90-GCODE-Style-Guide.md) | Voron-informed formatting, macro-scoped documentation, state handling, and review standards. |
 
 **Repository layout:**
 
 - [`config/`](config/) — Klipper configuration and macros. See the
-  [configuration layout](doc/0-Design_Decisions.md#6-klipper-configuration-organization) for topic files and organization.
+  [configuration layout](doc/01-Design-Decisions.md#6-klipper-configuration-organization) for topic files and organization.
 - [`cad/`](cad/) — CAD models and printable-part designs.
 - [`doc/`](doc/) — Design, BOM, printed parts, conversion, slicer, calibration, and G-Code style guides.
 - [`bin/`](bin/) — Host display-orientation scripts.
@@ -71,6 +70,12 @@ resources. Preserve upstream notices when redistributing adapted material.
 
 ## Major Change Log
 
+- **2026-11-24 — Documentation numbering and navigation.** Renumbered the build
+  guides as 1–6, promoted printed parts from a BOM supplement to its own numbered
+  guide, and moved the maintainer G-Code style guide to reference number 90.
+  Standardized filenames with two-digit prefixes and hyphen separators, and
+  updated guide titles, README navigation, and internal links. No printer
+  configuration or behavior changed.
 - **2026-11-22–23 — Community macro naming.** Renamed the private job-done
   positioning helper to `PRESENT_PRINT` for console and OctoApp use, and the
   conditional-homing helper to `_CG28`. Updated callers and documentation,
@@ -95,7 +100,7 @@ resources. Preserve upstream notices when redistributing adapted material.
   explicit includes and acknowledgements into `printer.cfg`. Applied Voron
   community-style formatting and macro descriptions to `printer.cfg`; retained
   machine settings, saved calibration, macro interfaces, and behavior. Updated
-  documentation links and added the [configuration layout](doc/0-Design_Decisions.md#6-klipper-configuration-organization)
+  documentation links and added the [configuration layout](doc/01-Design-Decisions.md#6-klipper-configuration-organization)
   and migration notes.
 - **2026-11-12 — Chamber temperature waits and heater duct.** Updated `M141`
   to wait for heating and conditionally for cooling, parking the active head
@@ -104,8 +109,8 @@ resources. Preserve upstream notices when redistributing adapted material.
   temperature; `S0` turns the heater off without waiting. Added the 400 W PTC
   heater-duct FreeCAD model in [`cad/`](cad/).
 - **2026-11-08–11 — Conversion documentation overhaul.** Expanded and reviewed
-  the [BOM](doc/1-BOM.md), [physical-conversion draft](doc/2-Physical_Conversion.md),
-  [OrcaSlicer setup](doc/3-Slicer.md), and [calibration guide](doc/4-Calibration.md).
+  the [BOM](doc/02-BOM.md), [physical-conversion draft](doc/04-Physical-Conversion.md),
+  [OrcaSlicer setup](doc/05-Slicer-Setup.md), and [calibration guide](doc/06-Calibration.md).
   Clarified electrical-safety gaps, build-plate selection, the shared coordinate
   reference, and PolyLite ASA tuning, including filament-shrinkage profiling.
   Corrected the documented MIRROR width to 94.5 mm to match the macros and
@@ -130,7 +135,7 @@ resources. Preserve upstream notices when redistributing adapted material.
   **400 W, 120 V AC PTC heater** on February 7. Added and refined `M141`, `M191`,
   chamber PID tuning, and `CONTROLLED_COOLDOWN` for a gradual bed/chamber
   temperature ramp. Refactored NeoPixel lighting to indicate heating and print
-  status. See the [chamber-heater safety notes](doc/2-Physical_Conversion.md#120-v-ac-chamber-heater-wiring)
+  status. See the [chamber-heater safety notes](doc/04-Physical-Conversion.md#120-v-ac-chamber-heater-wiring)
   before attempting the mains-powered heater installation.
 - **2026-01-17–28 — Enclosure and host additions.** Added front-panel enclosure
   fan CAD, a chamber-thermistor mount reference, and display-rotation scripts for

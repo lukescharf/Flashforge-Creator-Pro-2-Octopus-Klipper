@@ -1,10 +1,10 @@
-# Design Decisions: Flashforge Creator Pro 2 → FFCP2+OK
+# 1. Design Decisions: Flashforge Creator Pro 2 → FFCP2+OK
 
 This document explains the goals and tradeoffs behind this conversion, rather
-than providing assembly instructions. The [BOM](1-BOM.md),
-[printed-parts guide](1a-BOM-Printed-Parts-Supplement.md),
-[physical-conversion draft](2-Physical_Conversion.md),
-[slicer setup](3-Slicer.md), and [calibration guide](4-Calibration.md)
+than providing assembly instructions. The [BOM](02-BOM.md),
+[printed-parts guide](03-Printed-Parts.md),
+[physical-conversion draft](04-Physical-Conversion.md),
+[slicer setup](05-Slicer-Setup.md), and [calibration guide](06-Calibration.md)
 cover the implementation. The current source of truth for behavior is
 the topic files in [`config/`](../config/), loaded through
 [`config/printer.cfg`](../config/printer.cfg).
@@ -102,7 +102,7 @@ profiles represent the five print modes, filament profiles hold material-specifi
 temperature and shrinkage settings, and custom Machine start G-code passes
 parameters to the Klipper startup macros. Most configuration and testing has
 been done with OrcaSlicer, so the bundled profiles and the examples in
-[Slicer Setup](3-Slicer.md#slicer-choice) reflect its actual G-Code output.
+[Slicer Setup](05-Slicer-Setup.md#slicer-choice) reflect its actual G-Code output.
 
 Other slicers should work, but they are not equally tested on this conversion.
 In particular, SuperSlicer and PrusaSlicer do not yet have tested profiles here.
@@ -174,7 +174,7 @@ This prevents incidental tool commands from the slicer from undoing the selected
 single-head or synchronized mode. `TCOPY` and `TMIRROR` establish the
 synchronized relationships; in these modes the T0 printhead drives the toolpath and T1 follows its motion and extrusion.
 
-See [Slicer Setup](3-Slicer.md) for the actual start-code expressions, origins,
+See [Slicer Setup](05-Slicer-Setup.md) for the actual start-code expressions, origins,
 printable volumes, and MIRROR clearance calculation.
 
 ## 4. Chamber Heating Hardware
@@ -314,7 +314,7 @@ local integration files in `printer_data/config`.  I symlink from
 `printer_data/config` into my repo to keep everything consistent. Includes are
 explicit rather than wildcard-based, so unrelated `.cfg` files are not loaded
 automatically. I'm gradually migrating these files toward the
-[Klipper G-Code style guide](9-GCODE-Style-Guide.md), which draws on published
+[Klipper G-Code style guide](90-GCODE-Style-Guide.md), which draws on published
 Voron configurations and community documentation while identifying local choices,
 including macro-scoped comment blocks. I'm using LLM-based tools to deep-lint my
 Klipper G-Code and to ensure a consistent style, while applying conventional
